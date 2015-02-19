@@ -1,0 +1,17 @@
+http://stackoverflow.com/questions/13992686/matching-a-text-in-line-by-line-file-with-xtext
+
+	Terminal : ('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '_' | '-' | '0'..'9')*
+
+Exemple : data_item ::= <IDENTIFIER> : <IDENTIFIER>
+::= <identifier><space>:<space><identifier>
+
+rules[]
+
+rules["data_item"] = Parser.createRule(
+	MatchRuleOnce(identifier),
+	MatchRuleOnce(space),
+	MatchStringOnce(":"),
+	MatchRuleOnce(space),
+	MatchRuleOnce(identifier)
+	)
+
