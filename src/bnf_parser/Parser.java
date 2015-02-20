@@ -4,102 +4,177 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import bnf_parser.collectors.Collector;
+import bnf_parser.collectors.CollectorFactory;
+import bnf_parser.collectors.CollectorNotFoundException;
+
+
 public class Parser
 {
 	// PUBLIC CONSTANTS
 
-	public final int INFINITY = -1;
+	public final int INFINITY = Integer.MAX_VALUE;
 
 	// PROTECTED PROPERTIES
 
 	protected String filename;
 
+	protected CollectorFactory collectorFactory;
+
 	protected HashMap<String, Rule> rules;
 
-	protected String TEMP_STR = "terre";
+	protected String TEMP_STR = "add_joueur(element : Joueur, xx : yy) : void";
 
 	// PUBLIC CONSTRUCTORS
 
-	public Parser(String filename)
+	public Parser(String filename, CollectorFactory collectorFactory)
 	{
 		init();
 
-		this.filename	= filename;
+		this.filename			= filename;
+		this.collectorFactory	= collectorFactory;
 	}
 
 	// PUBLIC METHODS
 
-	public BnfParserCallable1 matchRuleOnce(String ruleName)
+	// matchRule callables
+
+	public Callable matchRule(String ruleName, int minOccurences, int maxOccurences)
 	{
-		return null;
+		return (new MatchRule(this, ruleName, minOccurences, maxOccurences));
 	}
 
-	public BnfParserCallable1 matchString(String string, int minOccurences, int maxOccurences)
+	public Callable matchRule(String ruleName)
+	{
+		return matchRule(ruleName, 1, 1);
+	}
+
+	public Callable matchRule_0_1(String ruleName)
+	{
+		return matchRule(ruleName, 0, 1);
+	}
+
+	public Callable matchRule_0_p(String ruleName)
+	{
+		return matchRule(ruleName, 0, INFINITY);
+	}
+
+	public Callable matchRule_1_p(String ruleName)
+	{
+		return matchRule(ruleName, 1, INFINITY);
+	}
+
+	// matchString callables
+
+	public Callable matchString(String string, int minOccurences, int maxOccurences)
 	{
 		return (new MatchString(this, string, minOccurences, maxOccurences));
 	}
 
-	public BnfParserCallable1 matchString(String string)
+	public Callable matchString(String string)
 	{
-		return (new MatchString(this, string, 1, 1));
+		return matchString(string, 1, 1);
 	}
 
-	public BnfParserCallable1 matchString_0_1(String string)
+	public Callable matchString_0_1(String string)
 	{
-		return (new MatchString(this, string, 0, 1));
+		return matchString(string, 0, 1);
+
 	}
 
-	public BnfParserCallable1 matchString_0_p(String string)
+	public Callable matchString_0_p(String string)
 	{
-		return (new MatchString(this, string, 0, INFINITY));
+		return matchString(string, 0, INFINITY);
 	}
 
-	public BnfParserCallable1 matchString_1_p(String string)
+	public Callable matchString_1_p(String string)
 	{
-		return (new MatchString(this, string, 1, INFINITY));
+		return matchString(string, 1, INFINITY);
 	}
 
-	public void createRule(String ruleName, BnfParserCallable1... args) throws RuleAlreadyExistsException
+	// matchPattern callables
+
+	public Callable matchPattern(String pattern, int minOccurences, int maxOccurences)
+	{
+		return (new MatchPattern(this, pattern, minOccurences, maxOccurences));
+	}
+
+	public Callable matchPattern(String pattern)
+	{
+		return matchPattern(pattern, 1, 1);
+	}
+
+	public Callable matchPattern_0_1(String pattern)
+	{
+		return matchPattern(pattern, 0, 1);
+
+	}
+
+	public Callable matchPattern_0_p(String pattern)
+	{
+		return matchPattern(pattern, 0, INFINITY);
+	}
+
+	public Callable matchPattern_1_p(String pattern)
+	{
+		return matchPattern(pattern, 1, INFINITY);
+	}
+
+	//
+
+	public void createRule(String ruleName, String collectorName, Callable... args) throws RuleAlreadyExistsException
 	{
 		if(rules.containsKey(ruleName))
 		{
 			throw new RuleAlreadyExistsException();
 		}
 
-		rules.put(ruleName, new Rule(args));
+		rules.put(ruleName, new Rule(collectorName, args));
 	}
 
-	public boolean evaluateRule(String ruleName) throws RuleNotFoundException
+	public Collector evaluateRule(String ruleName) throws RuleNotFoundException, CollectorNotFoundException, ParsingFailedException
 	{
 		if(!rules.containsKey(ruleName))
 		{
 			throw new RuleNotFoundException();
 		}
+//System.out.println("Starting rule " + ruleName);
+		String collectorName	= rules.get(ruleName).getCollectorName();
+		Callable[] callables	= rules.get(ruleName).getCallables();
+		Collector collector		= collectorFactory.createCollector(collectorName);
 
-		BnfParserCallable1[] callables = rules.get(ruleName).subRules;
-
-		for(BnfParserCallable1 currentCallable : callables)
+		for(Callable currentCallable : callables)
 		{
+
 			if(!currentCallable.parse())
 			{
-				return false;
+				//System.out.println("Failing rule " + ruleName);
+				throw new ParsingFailedException();
+			}
+
+			if(null != collector)
+			{
+				for(Collector callableCollector	: currentCallable.getCollectors())
+				{
+					collector.addChild(ruleName, callableCollector, 0);
+				}
 			}
 		}
-
-		return true;
+		//System.out.println("Ending rule " + ruleName);
+		return collector;
 	}
 
 	// PACKAGE METHODS
 
 	String testString(String string)
 	{
-		return testPattern("^" + Pattern.quote(string));
+		return testPattern(Pattern.quote(string));
 	}
 
 	String testPattern(String pattern)
 	{
-		Pattern pattern1 = Pattern.compile("(" + pattern + ")");
-		Matcher matcher = pattern1.matcher(TEMP_STR);
+		Pattern pattern1	= Pattern.compile("(^" + pattern + ")");
+		Matcher matcher		= pattern1.matcher(TEMP_STR);
 
 		while(matcher.find())
 		{

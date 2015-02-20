@@ -2,6 +2,8 @@ http://stackoverflow.com/questions/13992686/matching-a-text-in-line-by-line-file
 
 	Terminal : ('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '_' | '-' | '0'..'9')*
 
+[A-Za-z_-0-9]+
+
 Exemple : data_item ::= <IDENTIFIER> : <IDENTIFIER>
 ::= <identifier><space>:<space><identifier>
 
@@ -14,4 +16,42 @@ rules["data_item"] = Parser.createRule(
 	MatchRuleOnce(space),
 	MatchRuleOnce(identifier)
 	)
+
+
+
+X = [A {, A}]
+
+X = MatchRule_0_1("X_1")
+
+X_1 = MatchRule("A"), MatchRule_0_p("A_1")
+
+A_1 = MatchString(","), MatchRule("A")
+
+
+---
+
+createRule("identifier", "StringCollector", parser.matchString(...), ...)
+ => while(...) { StringCollector.addChild(currentMatch); }
+
+---
+
+data_item => createRule("data_item", "DataItemCollector", parser.MatchRule("identifier"), parser.MatchRule("space"), parser.MatchRule("colon"), parser.MatchRule("space"), parser.MatchRule("type"))
+
+-> DataItemCollector.addChild("identifier", StringCollector(string = "<identifier>")).addChild("space", null).addChild("colon", null).addChild("space", null).addChild("type", StringCollector(string = "<type>"))
+-> identifier : retained ; space : ignored ; colon : ignored ; space : ignored ; type : retained;
+
+---
+
+space => createRule("space", null, parser.MatchPattern("\\s+"))
+
+---
+
+
+identifier => createRule("identifier", "StringCollector", parser.MatchPattern("[a-z]+"));
+
+parser.matchPattern => collector = StringCollector
+
+
+
+
 

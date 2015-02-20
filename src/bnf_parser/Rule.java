@@ -1,11 +1,25 @@
 package bnf_parser;
 
+
 public class Rule
 {
-	BnfParserCallable1[] subRules;
+	protected String collectorName;
 
-	Rule(BnfParserCallable1... args)
+	protected Callable[] callables;
+
+	Rule(String collectorName, Callable... callables)
 	{
-		subRules	= args;
+		this.collectorName	= collectorName;
+		this.callables	= callables;
+	}
+
+	String getCollectorName()
+	{
+		return collectorName;
+	}
+
+	Callable[] getCallables()
+	{
+		return callables;
 	}
 }
