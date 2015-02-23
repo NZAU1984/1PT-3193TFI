@@ -1,23 +1,22 @@
-package bnf_parser;
+package callables;
 
+import bnf_parser.Parser;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 
-
-
-public class MatchString extends Callable
+public class MatchPattern extends Callable
 {
-	protected String string;
+	protected String pattern;
 
-	MatchString(Parser parser, String string, int minOccurences, int maxOccurences)
+	public MatchPattern(Parser parser, String pattern, int minOccurences, int maxOccurences)
 	{
 		super(parser, minOccurences, maxOccurences);
 
-		this.string	= string;
+		this.pattern	= pattern;
 	}
 
 	@Override
-	boolean parse()
+	public boolean parse()
 	{
 		resetCollectors();
 
@@ -27,7 +26,7 @@ public class MatchString extends Callable
 
 		String val;
 
-		while((val = parser.testString(string)) != null)
+		while((val = parser.testPattern(pattern)) != null)
 		{
 			sb.append(val);
 

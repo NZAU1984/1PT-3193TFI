@@ -1,12 +1,13 @@
-package bnf_parser;
+package callables;
 
+import bnf_parser.Parser;
 import bnf_parser.collectors.Collector;
 
 public class MatchRule extends Callable
 {
 	protected String ruleName;
 
-	MatchRule(Parser parser, String ruleName, int minOccurences, int maxOccurences)
+	public MatchRule(Parser parser, String ruleName, int minOccurences, int maxOccurences)
 	{
 		super(parser, minOccurences, maxOccurences);
 
@@ -14,7 +15,7 @@ public class MatchRule extends Callable
 	}
 
 	@Override
-	boolean parse()
+	public boolean parse()
 	{
 		resetCollectors();
 

@@ -1,37 +1,21 @@
 package uml_collectors;
 
-import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.CollectorFactory;
 
+/**
+ * This class extends bnf_parser.collectors.CollectorFactory to create custom collectors contained in this package.
+ *
+ * @author Hubert Lemelin
+ */
 public class UmlCollectorFactory extends CollectorFactory
 {
+	// PUBLIC CONSTRUCTOR
+
+	/**
+	 * Only calls the super constructor so it can grab its own package name and this package name.
+	 */
 	public UmlCollectorFactory()
 	{
-
+		super();
 	}
-
-	@Override
-	protected Collector _createCollector(String collectorName)
-	{
-		if(collectorName.equals("DataitemCollector"))
-		{
-			return new DataitemCollector();
-		}
-
-		if(collectorName.equals("AttributelistCollector"))
-		{
-			return new AttributelistCollector();
-		}
-
-		if(collectorName.equals("OperationCollector"))
-		{
-			return new OperationCollector();
-		}
-
-		System.out.println("%" + collectorName);
-		// TODO Auto-generated method stub
-
-		return null;
-	}
-
 }

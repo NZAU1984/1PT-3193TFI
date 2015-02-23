@@ -1,5 +1,7 @@
+import java.io.IOException;
 import java.net.URL;
 
+import callables.CallableContainsMoreThanOneCollectorException;
 import uml_collectors.UmlCollectorFactory;
 import bnf_parser.Parser;
 import bnf_parser.ParsingFailedException;
@@ -14,23 +16,24 @@ import bnf_parser.collectors.StringCollector;
 public class IFT3913_TP1
 {
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
 		IFT3913_TP1 myClass = new IFT3913_TP1();
 
-		URL ligue = myClass.getClass().getResource("Ligue.ucd");
+		URL ligue = myClass.getClass().getResource("test.txt");
 
-		//System.out.println(ligue.getPath());
+		System.out.println(ligue.getPath());
 
-		Parser parser = new Parser(ligue.getPath(), new UmlCollectorFactory());
+		Parser parser = new Parser(ligue.getPath(), "UTF-8", new UmlCollectorFactory());
 
 		try
 		{
-			parser.createRule("space",		null,				parser.matchPattern("\\s+"));
 
-			parser.createRule("identifier",	"StringCollector",	parser.matchPattern("[A-Za-z_\\-0-9]+"));
+			parser.createRule("space", parser.matchPattern("\\s+"));
 
-			parser.createRule("type",		"StringCollector",	parser.matchRule("identifier"));
+			parser.createRule("identifier",	0,		parser.matchPattern("[A-Za-z_\\-0-9]+"));
+
+			parser.createRule("type",		0,		parser.matchRule("identifier"));
 
 			parser.createRule("data_item",	"DataitemCollector",
 				parser.matchRule("identifier"),
@@ -40,7 +43,7 @@ public class IFT3913_TP1
 				parser.matchRule("type")
 			);
 
-			parser.createRule("data_item_list_optional_repeat", "AttributelistCollector",
+			parser.createRule("data_item_list_optional_repeat", 2,
 					parser.matchString(","),
 					parser.matchRule_0_1("space"),
 					parser.matchRule("data_item"),
@@ -78,6 +81,15 @@ public class IFT3913_TP1
 				parser.matchRule_0_1("space"),
 				parser.matchRule("type")
 			);
+
+			parser.createRule("operation_list_optional_repeat", 2,
+					parser.matchString(","),
+					parser.matchRule_0_1("space"),
+					parser.matchRule("operation"),
+					parser.matchRule_0_1("space")
+			);
+
+
 		}
 		catch (RuleAlreadyExistsException e)
 		{
@@ -106,6 +118,11 @@ public class IFT3913_TP1
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		catch (CallableContainsMoreThanOneCollectorException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
 		if((null != res) && (res instanceof StringCollector))
@@ -114,6 +131,10 @@ public class IFT3913_TP1
 
 		System.out.println("=> " + sc.getString());
 		}
+
+		System.out.println("position = " + parser.getBufferPosition());
+
+		parser.close();
 	}
 
 

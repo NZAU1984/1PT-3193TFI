@@ -11,7 +11,10 @@ public class StringCollector extends Collector
 
 	public StringCollector()
 	{
-		sb	= new StringBuilder();
+		System.out.println("** StringCollector :: constructor");
+
+		sb				= new StringBuilder();
+		collectorName	= "StringCollector";
 	}
 
 	// PUBLIC METHODS

@@ -5,7 +5,10 @@ public abstract class Collector
 	// PROTECTED PROPERTIES
 
 	int offsetInFile;
-	String ruleName	= "";
+
+	protected String ruleName	= "";
+
+	protected String collectorName	= "";
 
 	// PUBLIC METHODS
 
@@ -35,5 +38,10 @@ public abstract class Collector
 	public void addString(String string)
 	{
 
+	}
+
+	public String identify()
+	{
+		return collectorName;
 	}
 }

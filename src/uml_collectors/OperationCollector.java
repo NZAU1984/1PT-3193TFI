@@ -1,7 +1,5 @@
 package uml_collectors;
 
-import java.util.LinkedList;
-
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 
@@ -10,13 +8,17 @@ public class OperationCollector extends Collector
 {
 	// PROTECTED PROPERTIES
 
-	protected LinkedList<DataitemCollector> dataitemCollectors;
+	protected String identifier;
+
+	protected DataitemCollector[] dataitemCollectors;
 
 	// PUBLIC CONSTRUCTOR
 
 	public OperationCollector()
 	{
-		dataitemCollectors	= new LinkedList<DataitemCollector>();
+		System.out.println("OperationCollector :: constructor");
+
+		collectorName		= "OperationCollector";
 	}
 
 	// PUBLIC METHODS
@@ -24,8 +26,6 @@ public class OperationCollector extends Collector
 	@Override
 	public void addChild(String ruleName, Collector collector)
 	{
-		//System.out.println("... addChild");
-
 		if(null == collector)
 		{
 			return;
@@ -33,22 +33,23 @@ public class OperationCollector extends Collector
 
 		String ruleName1 = collector.getRuleName();
 
-		if((collector instanceof StringCollector) &&  ((null != ruleName1) && !ruleName1.equals("")))
+		if((collector instanceof StringCollector) &&  ((null != ruleName1) && ruleName1.equals("identifier")))
 		{
-			System.out.println("... str = " + ((StringCollector) collector).getString() + ", ruleName=" + ruleName1);
+			identifier = ((StringCollector) collector).getString();
+
+			return;
 		}
 
-		if(collector instanceof DataitemCollector)
+		if((collector instanceof StringCollector) &&  ((null != ruleName1) && ruleName1.equals("type")))
 		{
-			dataitemCollectors.add((DataitemCollector) collector);
+			System.out.println("TYPE");
 
-			DataitemCollector dic = (DataitemCollector) collector;
-			System.out.println("dataitem :: id=" + dic.getIdentifier() + ", type=" + dic.getType());
+			return;
 		}
 
 		if(collector instanceof AttributelistCollector)
 		{
-			System.out.println("attr list");
+			dataitemCollectors	= ((AttributelistCollector) collector).getDataitemCollectors();
 		}
 	}
 

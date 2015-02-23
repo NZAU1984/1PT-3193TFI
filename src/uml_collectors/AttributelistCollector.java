@@ -15,7 +15,10 @@ public class AttributelistCollector extends Collector
 
 	public AttributelistCollector()
 	{
+		System.out.println("%%% AttributeListCollector :: constructor");
+
 		dataitemCollectors	= new LinkedList<DataitemCollector>();
+		collectorName		= "AttributelistCollector";
 	}
 
 	// PUBLIC METHODS
@@ -23,8 +26,6 @@ public class AttributelistCollector extends Collector
 	@Override
 	public void addChild(String ruleName, Collector collector)
 	{
-		//System.out.println("... addChild");
-
 		if(null == collector)
 		{
 			return;
@@ -37,11 +38,11 @@ public class AttributelistCollector extends Collector
 			dataitemCollectors.add((DataitemCollector) collector);
 
 			DataitemCollector dic = (DataitemCollector) collector;
-			//System.out.println("dataitem :: id=" + dic.getIdentifier() + ", type=" + dic.getType());
 		}
 	}
 
-
-
-
+	public DataitemCollector[] getDataitemCollectors()
+	{
+		return dataitemCollectors.toArray(new DataitemCollector[dataitemCollectors.size()]);
+	}
 }

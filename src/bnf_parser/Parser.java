@@ -1,5 +1,11 @@
 package bnf_parser;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,35 +13,65 @@ import java.util.regex.Pattern;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.CollectorFactory;
 import bnf_parser.collectors.CollectorNotFoundException;
+import callables.Callable;
+import callables.CallableContainsMoreThanOneCollectorException;
+import callables.MatchPattern;
+import callables.MatchRule;
+import callables.MatchString;
 
 
 public class Parser
 {
 	// PUBLIC CONSTANTS
 
-	public final int INFINITY = Integer.MAX_VALUE;
+	public final static int INFINITY = Integer.MAX_VALUE;
 
 	// PROTECTED PROPERTIES
 
-	protected String filename;
+	protected FileInputStream fileInputStream;
+
+	protected CharBuffer charBuffer;
+
+	protected int charBufferPosition	= 0;
 
 	protected CollectorFactory collectorFactory;
 
 	protected HashMap<String, Rule> rules;
 
-	protected String TEMP_STR = "add_joueur(element : Joueur, xx : yy) : void";
-
 	// PUBLIC CONSTRUCTORS
 
-	public Parser(String filename, CollectorFactory collectorFactory)
+	public Parser(String filename, String charset, CollectorFactory collectorFactory) throws IOException
 	{
 		init();
 
-		this.filename			= filename;
 		this.collectorFactory	= collectorFactory;
+
+		// http://www.java-tips.org/java-se-tips/java.util.regex/how-to-apply-regular-expressions-on-the-contents-of-a.html
+		fileInputStream			= new FileInputStream(filename);
+        FileChannel fileChannel	= fileInputStream.getChannel();
+        ByteBuffer byteBuffer	= fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) fileChannel.size());
+        charBuffer				= Charset.forName(charset).newDecoder().decode(byteBuffer);
 	}
 
 	// PUBLIC METHODS
+
+	public void close()
+	{
+		try
+		{
+			fileInputStream.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		finally
+		{
+			fileInputStream	= null;
+			charBuffer		= null;
+		}
+	}
 
 	// matchRule callables
 
@@ -120,76 +156,166 @@ public class Parser
 		return matchPattern(pattern, 1, INFINITY);
 	}
 
-	//
+	// Rule creators
+
+	public void createRule(String ruleName, Callable... args) throws RuleAlreadyExistsException
+	{
+		createRule(ruleName, null, Rule.NO_COLLECTOR_POSITION_OVERRIDE, args);
+	}
 
 	public void createRule(String ruleName, String collectorName, Callable... args) throws RuleAlreadyExistsException
+	{
+		createRule(ruleName, collectorName, Rule.NO_COLLECTOR_POSITION_OVERRIDE, args);
+	}
+
+	public void createRule(String ruleName, int collectorPositionOverride, Callable... args)
+		throws RuleAlreadyExistsException
+	{
+		createRule(ruleName, null, collectorPositionOverride, args);
+	}
+
+	protected void createRule(String ruleName, String collectorName,  int collectorPositionOverride, Callable... args)
+		throws RuleAlreadyExistsException
 	{
 		if(rules.containsKey(ruleName))
 		{
 			throw new RuleAlreadyExistsException();
 		}
 
-		rules.put(ruleName, new Rule(collectorName, args));
+		rules.put(ruleName, new Rule(collectorName, collectorPositionOverride, args));
 	}
 
-	public Collector evaluateRule(String ruleName) throws RuleNotFoundException, CollectorNotFoundException, ParsingFailedException
+	/**
+	 * Evaluates the specified rule. In case of success, returns a new collector whose type was specified when creating
+	 * the rule, including null if none was specified. Throws a 'ParsingFailedException' if any part of the rule
+	 * fails parsing.
+	 * @param ruleName The name of the rule to be evaluated.
+	 * @return
+	 * @throws RuleNotFoundException
+	 * @throws CollectorNotFoundException
+	 * @throws ParsingFailedException
+	 * @throws CallableContainsMoreThanOneCollectorException
+	 */
+	public Collector evaluateRule(String ruleName)
+		throws RuleNotFoundException, CollectorNotFoundException, ParsingFailedException,
+			CallableContainsMoreThanOneCollectorException
 	{
+		/* Does rule exist? */
 		if(!rules.containsKey(ruleName))
 		{
 			throw new RuleNotFoundException();
 		}
-//System.out.println("Starting rule " + ruleName);
-		String collectorName	= rules.get(ruleName).getCollectorName();
-		Callable[] callables	= rules.get(ruleName).getCallables();
-		Collector collector		= collectorFactory.createCollector(collectorName);
 
-		for(Callable currentCallable : callables)
+		String collectorName = rules.get(ruleName).getCollectorName();
+
+		/* Creating the rule's collector. It might be 'null' (for example, a simple pattern matching rule may only have
+		 * to return true if the pattern matched, but the matched string is not important. As an example, creating a
+		 * rule to match spaces often doesn't have to 'collect' the matched spaces. If a callable's collector will
+		 * override the rule's collector, the collector, here, will be null as it doesn't make any sense to create a
+		 * collector to later replace it by another. */
+		Collector collector = collectorFactory.createCollector(collectorName);
+
+		/* If we want this rule to use the collector of one of its callables, this variable will hold its index which
+		 * was defined when creating the rule. */
+		int collectorPositionOverride	= rules.get(ruleName).getCollectorPositionOverride();
+		Callable[] callables			= rules.get(ruleName).getCallables();
+
+		for(int i = 0, iMax = callables.length; i < iMax; ++i)
 		{
+			Callable currentCallable = callables[i];
 
+			/* The current callable failed parsing, the current rule failed. Let's exit with an exception. */
 			if(!currentCallable.parse())
 			{
-				//System.out.println("Failing rule " + ruleName);
 				throw new ParsingFailedException();
 			}
 
-			if(null != collector)
+			/* If collector overriding has to occur... */
+			if(i == collectorPositionOverride)
 			{
-				for(Collector callableCollector	: currentCallable.getCollectors())
+				/* Gets the only collector contained in the "overriding" callable. If there are more than one, this
+				 * throws a 'CallableContainsMoreThanOneCollectorException'. If there is none, it returns null. */
+				collector	= currentCallable.getCollector();
+			}
+			else
+			{
+				/* Collector might be null, must check to prevent 'NullPointerException'. */
+				if(null != collector)
 				{
-					collector.addChild(ruleName, callableCollector, 0);
+					/* Adding all of the callable's collectors. Most of the time, there will only be one. */
+					for(Collector callableCollector	: currentCallable.getCollectors())
+					{
+						collector.addChild(ruleName, callableCollector, 0);
+					}
 				}
 			}
 		}
-		//System.out.println("Ending rule " + ruleName);
+
 		return collector;
 	}
 
-	// PACKAGE METHODS
+	// TODO think about that...
+	// NO::PACKAGE::NO METHODS
 
-	String testString(String string)
+	/**
+	 * Checks if at the current parser's position the provided string exists.
+	 * @param string the string to find
+	 * @return the string if found, null otherwise
+	 */
+	public String testString(String string)
 	{
+		/* Calls 'testPattern' by escaping the string to prevent any regex expression that could be contained in the
+		 * string from being evaluated. */
 		return testPattern(Pattern.quote(string));
 	}
 
-	String testPattern(String pattern)
+	/**
+	 * Checks if at the current parser's position the provided pattern matches.
+	 * @param pattern the pattern to check which must not start with '^'
+	 * @return the matched string if success, null otherwise
+	 */
+	public String testPattern(String pattern)
 	{
-		Pattern pattern1	= Pattern.compile("(^" + pattern + ")");
-		Matcher matcher		= pattern1.matcher(TEMP_STR);
+		Pattern pattern1	= Pattern.compile("(^" + pattern + ")", Pattern.DOTALL);
+		Matcher matcher		= pattern1.matcher(charBuffer);
 
-		while(matcher.find())
+		/* There is only one group that can be found, the one contained in the parentheses above. */
+		if(matcher.find())
 		{
 			String group = matcher.group();
 
-			TEMP_STR = TEMP_STR.substring(group.length());
+			/* Moving the buffer's position after the found string. */
+			setBufferPosition(charBufferPosition + group.length());
 
 			return group;
-
 		}
 
+		/* Pattern did not match. */
 		return null;
 	}
 
 	// PROTECTED METHODS
+
+	// TODO set back to 'protected'
+	/**
+	 * Returns the buffer's current position.
+	 * @return the buffer's current position
+	 */
+	public int getBufferPosition()
+	{
+		return charBufferPosition;
+	}
+
+	/**
+	 * Sets the buffer position.
+	 * @param position
+	 */
+	protected void setBufferPosition(int position)
+	{
+		charBufferPosition	= position;
+
+		charBuffer.position(charBufferPosition);
+	}
 
 	// PRIVATE METHODS
 

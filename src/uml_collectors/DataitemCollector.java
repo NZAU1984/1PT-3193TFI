@@ -15,6 +15,9 @@ public class DataitemCollector extends Collector
 
 	public DataitemCollector()
 	{
+		System.out.println("** DataitemCollector::constructor");
+
+		collectorName		= "DataitemCollector";
 	}
 
 	// PUBLIC METHODS
@@ -27,7 +30,14 @@ public class DataitemCollector extends Collector
 			return;
 		}
 
+		if(collector instanceof DataitemCollector)
+		{
+			System.out.println("=> Dataitemcollector");
+		}
+
 		String ruleName1 = collector.getRuleName();
+
+		//System.out.println("    addChild::ruleName=" + ruleName + ", ruleName1=" + ruleName1);
 
 		if(null == ruleName1)
 		{
@@ -39,12 +49,12 @@ public class DataitemCollector extends Collector
 			if(ruleName1.equals("identifier"))
 			{
 				identifier = ((StringCollector) collector).getString();
-	//			System.out.println("id = " + identifier);
+				//System.out.println("    DataitemCollector::id = " + identifier);
 			}
 			else if(ruleName1.equals("type"))
 			{
 				type = ((StringCollector) collector).getString();
-	//			System.out.println("type = " + type);
+				//System.out.println("    DataitemCollector::type = " + type);
 			}
 		}
 	}
