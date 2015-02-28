@@ -1,4 +1,4 @@
-package callables;
+package bnf_parser.callables;
 
 import java.util.LinkedList;
 

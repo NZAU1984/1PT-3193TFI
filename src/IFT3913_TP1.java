@@ -1,12 +1,12 @@
 import java.io.IOException;
 import java.net.URL;
 
-import callables.CallableContainsMoreThanOneCollectorException;
 import uml_collectors.UmlCollectorFactory;
 import bnf_parser.Parser;
 import bnf_parser.ParsingFailedException;
 import bnf_parser.RuleAlreadyExistsException;
 import bnf_parser.RuleNotFoundException;
+import bnf_parser.callables.CallableContainsMoreThanOneCollectorException;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.CollectorNotFoundException;
 import bnf_parser.collectors.StringCollector;
@@ -26,16 +26,29 @@ public class IFT3913_TP1
 
 		Parser parser = new Parser(ligue.getPath(), "UTF-8", new UmlCollectorFactory());
 
+/*		try
+		{
+			Rule1 spaceRule	= parser.createRule1("space").matchPattern("\\s+", 0, 1).build();
+		}
+		catch (RuleAlreadyExistsException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}*/
+
 		try
 		{
 
-			parser.createRule("space", parser.matchPattern("\\s+"));
+			parser.createRule("space",
+				parser.matchPattern("\\s+"));
 
-			parser.createRule("identifier",	0,		parser.matchPattern("[A-Za-z_\\-0-9]+"));
+			parser.createRule("identifier",	0,
+				parser.matchPattern("[A-Za-z_\\-0-9]+"));
 
-			parser.createRule("type",		0,		parser.matchRule("identifier"));
+			parser.createRule("type", 0,
+				parser.matchRule("identifier"));
 
-			parser.createRule("data_item",	"DataitemCollector",
+			parser.createRule("data_item", "DataitemCollector",
 				parser.matchRule("identifier"),
 				parser.matchRule_0_1("space"),
 				parser.matchString(":"),
@@ -44,10 +57,10 @@ public class IFT3913_TP1
 			);
 
 			parser.createRule("data_item_list_optional_repeat", 2,
-					parser.matchString(","),
-					parser.matchRule_0_1("space"),
-					parser.matchRule("data_item"),
-					parser.matchRule_0_1("space")
+				parser.matchString(","),
+				parser.matchRule_0_1("space"),
+				parser.matchRule("data_item"),
+				parser.matchRule_0_1("space")
 			);
 
 			parser.createRule("data_item_list", "AttributelistCollector",
@@ -55,18 +68,6 @@ public class IFT3913_TP1
 				parser.matchRule_0_1("space"),
 				parser.matchRule_0_p("data_item_list_optional_repeat")
 			);
-
-			/*parser.createRule("attribute_list", "AttributelistCollector",
-				parser.matchRule_0_1("data_item_list")
-			);*/
-
-			/*parser.createRule("arg_declaration", "ArgdeclarationCollector",
-				parser.matchString("("),
-				parser.matchRule_0_1("space"),
-				parser.matchRule_0_1("data_item_list"),
-				parser.matchRule_0_1("space"),
-				parser.matchString(")")
-			);*/
 
 			parser.createRule("operation", "OperationCollector",
 				parser.matchRule("identifier"),
@@ -83,10 +84,10 @@ public class IFT3913_TP1
 			);
 
 			parser.createRule("operation_list_optional_repeat", 2,
-					parser.matchString(","),
-					parser.matchRule_0_1("space"),
-					parser.matchRule("operation"),
-					parser.matchRule_0_1("space")
+				parser.matchString(","),
+				parser.matchRule_0_1("space"),
+				parser.matchRule("operation"),
+				parser.matchRule_0_1("space")
 			);
 
 

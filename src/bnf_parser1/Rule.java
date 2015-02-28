@@ -1,6 +1,6 @@
-package bnf_parser;
+package bnf_parser1;
 
-import bnf_parser.callables.Callable;
+import bnf_parser1.callables.Callable;
 
 
 public class Rule

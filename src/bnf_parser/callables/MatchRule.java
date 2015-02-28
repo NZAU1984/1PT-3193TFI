@@ -1,7 +1,8 @@
-package callables;
+package bnf_parser.callables;
 
 import bnf_parser.Parser;
 import bnf_parser.collectors.Collector;
+
 
 public class MatchRule extends Callable
 {

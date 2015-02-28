@@ -1,4 +1,4 @@
-package bnf_parser;
+package bnf_parser1;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,14 +10,11 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bnf_parser.callables.Callable;
-import bnf_parser.callables.CallableContainsMoreThanOneCollectorException;
-import bnf_parser.callables.MatchPattern;
-import bnf_parser.callables.MatchRule;
-import bnf_parser.callables.MatchString;
-import bnf_parser.collectors.Collector;
-import bnf_parser.collectors.CollectorFactory;
-import bnf_parser.collectors.CollectorNotFoundException;
+import bnf_parser1.callables.Callable;
+import bnf_parser1.callables.CallableContainsMoreThanOneCollectorException;
+import bnf_parser1.collectors.Collector;
+import bnf_parser1.collectors.CollectorFactory;
+import bnf_parser1.collectors.CollectorNotFoundException;
 
 
 public class Parser
@@ -37,6 +34,8 @@ public class Parser
 	protected CollectorFactory collectorFactory;
 
 	protected HashMap<String, Rule> rules;
+
+	protected HashMap<String, Rule1> rules1;
 
 	// PUBLIC CONSTRUCTORS
 
@@ -74,7 +73,7 @@ public class Parser
 	}
 
 	// matchRule bnf_parser.callables
-
+/*
 	public Callable matchRule(String ruleName, int minOccurences, int maxOccurences)
 	{
 		return (new MatchRule(this, ruleName, minOccurences, maxOccurences));
@@ -155,7 +154,7 @@ public class Parser
 	{
 		return matchPattern(pattern, 1, INFINITY);
 	}
-
+*/
 	// Rule creators
 
 	public void createRule(String ruleName, Callable... args) throws RuleAlreadyExistsException
@@ -183,6 +182,20 @@ public class Parser
 		}
 
 		rules.put(ruleName, new Rule(collectorName, collectorPositionOverride, args));
+	}
+
+	public Rule1 createRule1(String ruleName) throws RuleAlreadyExistsException
+	{
+		if(rules1.containsKey(ruleName))
+		{
+			throw new RuleAlreadyExistsException();
+		}
+
+		Rule1 rule	= new Rule1(this);
+
+		rules1.put(ruleName, rule);
+
+		return rule;
 	}
 
 	/**
@@ -254,6 +267,58 @@ public class Parser
 		return collector;
 	}
 
+/*	public Collector evaluateRule1(Rule1 rule)
+			throws RuleNotFoundException, CollectorNotFoundException, ParsingFailedException,
+				CallableContainsMoreThanOneCollectorException
+		{
+			String collectorName = rule.getCollectorName();
+
+			 Creating the rule's collector. It might be 'null' (for example, a simple pattern matching rule may only have
+			 * to return true if the pattern matched, but the matched string is not important. As an example, creating a
+			 * rule to match spaces often doesn't have to 'collect' the matched spaces. If a callable's collector will
+			 * override the rule's collector, the collector, here, will be null as it doesn't make any sense to create a
+			 * collector to later replace it by another.
+			Collector collector = collectorFactory.createCollector(collectorName);
+
+			 If we want this rule to use the collector of one of its bnf_parser.callables, this variable will hold its index which
+			 * was defined when creating the rule.
+			int collectorPositionOverride	= rule.getCollectorPositionOverride();
+			Callable[] callables			= rule.getCallables();
+
+			for(int i = 0, iMax = callables.length; i < iMax; ++i)
+			{
+				Callable currentCallable = callables[i];
+
+				 The current callable failed parsing, the current rule failed. Let's exit with an exception.
+				if(!currentCallable.parse())
+				{
+					throw new ParsingFailedException();
+				}
+
+				 If collector overriding has to occur...
+				if(i == collectorPositionOverride)
+				{
+					 Gets the only collector contained in the "overriding" callable. If there are more than one, this
+					 * throws a 'CallableContainsMoreThanOneCollectorException'. If there is none, it returns null.
+					collector	= currentCallable.getCollector();
+				}
+				else
+				{
+					 Collector might be null, must check to prevent 'NullPointerException'.
+					if(null != collector)
+					{
+						 Adding all of the callable's collectors. Most of the time, there will only be one.
+						for(Collector callableCollector	: currentCallable.getCollectors())
+						{
+							collector.addChild(rule, callableCollector, 0);
+						}
+					}
+				}
+			}
+
+			return collector;
+		}*/
+
 	// TODO think about that...
 	// NO::PACKAGE::NO METHODS
 
@@ -322,5 +387,6 @@ public class Parser
 	private void init()
 	{
 		rules = new HashMap<String, Rule>();
+		rules1	= new HashMap<String, Rule1>();
 	}
 }
