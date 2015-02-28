@@ -1,6 +1,7 @@
 package bnf_parser1.callables;
 
-import bnf_parser1.Parser;
+import bnf_parser1.Rule;
+import bnf_parser1.SubparserInterface;
 import bnf_parser1.collectors.Collector;
 
 
@@ -8,15 +9,19 @@ public class MatchRule extends Callable
 {
 	protected String ruleName;
 
-	public MatchRule(Parser parser, String ruleName, int minOccurences, int maxOccurences)
-	{
-		super(parser, minOccurences, maxOccurences);
+	protected Rule rule;
 
-		this.ruleName	= ruleName;
+	public MatchRule(Rule rule, int minOccurences, int maxOccurences)
+	{
+		super(minOccurences, maxOccurences);
+
+		//this.ruleName	= ruleName;
+
+		this.rule = rule;
 	}
 
 	@Override
-	public boolean parse()
+	public boolean parse(SubparserInterface parser)
 	{
 		resetCollectors();
 
@@ -26,11 +31,12 @@ public class MatchRule extends Callable
 		{
 			try
 			{
-				Collector collector	= parser.evaluateRule(ruleName);
+				//Collector collector	= parser.evaluateRule(ruleName);
+				Collector collector	= parser.evaluateRule(rule);
 
 				if(null != collector)
 				{
-					collector.setRuleName(ruleName);
+					//collector.setRuleName(ruleName);
 				}
 
 				addCollector(collector);

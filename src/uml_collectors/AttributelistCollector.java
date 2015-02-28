@@ -7,6 +7,7 @@ import bnf_parser.collectors.Collector;
 
 public class AttributelistCollector extends Collector
 {
+	public static final String className = AttributelistCollector.class.getName();
 	// PROTECTED PROPERTIES
 
 	protected LinkedList<DataitemCollector> dataitemCollectors;

@@ -2,21 +2,19 @@ package bnf_parser1.callables;
 
 import java.util.LinkedList;
 
-import bnf_parser1.Parser;
+import bnf_parser1.SubparserInterface;
 import bnf_parser1.collectors.Collector;
-
+// TODO convert to ArrayList
 public abstract class Callable
 {
-	protected Parser parser;
 	protected int minOccurences;
 	protected int maxOccurences;
 	protected LinkedList<Collector> collectors;
 
 	// PROTECTED CONSTRUCTOR
 
-	protected Callable(Parser parser, int minOccurences, int maxOccurences)
+	protected Callable(int minOccurences, int maxOccurences)
 	{
-		this.parser			= parser;
 		this.minOccurences	= minOccurences;
 		this.maxOccurences	= maxOccurences;
 
@@ -63,7 +61,7 @@ public abstract class Callable
 
 	// PUBLIC ABSTRACT METHODS
 
-	public abstract boolean parse();
+	public abstract boolean parse(SubparserInterface parser);
 
 	// PROTECTED METHODS
 

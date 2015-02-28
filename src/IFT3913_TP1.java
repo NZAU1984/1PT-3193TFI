@@ -22,13 +22,21 @@ public class IFT3913_TP1
 
 		URL ligue = myClass.getClass().getResource("test.txt");
 
-		System.out.println(ligue.getPath());
+		//System.out.println(ligue.getPath());
 
 		Parser parser = new Parser(ligue.getPath(), "UTF-8", new UmlCollectorFactory());
 
+		int iii = 2;
+
+		TestParser2 tp2 = new TestParser2();
+
+		if(2 == iii)
+		{
+			return;
+		}
 /*		try
 		{
-			Rule1 spaceRule	= parser.createRule1("space").matchPattern("\\s+", 0, 1).build();
+			Rule spaceRule	= parser.createRule1("space").matchPattern("\\s+", 0, 1).build();
 		}
 		catch (RuleAlreadyExistsException e1)
 		{

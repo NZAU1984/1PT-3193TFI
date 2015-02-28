@@ -6,34 +6,22 @@ public abstract class Collector
 
 	int offsetInFile;
 
-	protected String ruleName	= "";
-
 	protected String collectorName	= "";
 
 	// PUBLIC METHODS
 
-	public void addChild(String ruleName, Collector collector, int offsetInFile)
+	public void addChild(Collector collector, int index, int offsetInFile)
 	{
 		this.offsetInFile	= offsetInFile;
 
-		addChild(ruleName, collector);
+		addChild(collector, index);
 	}
 
 	// PUBLIC ABSTRACT METHODS
 
-	protected abstract void addChild(String ruleName, Collector collector);
+	protected abstract void addChild(Collector collector, int index);
 
 	// PUBLIC METHODS
-
-	public void setRuleName(String ruleName)
-	{
-		this.ruleName = ruleName;
-	}
-
-	public String getRuleName()
-	{
-		return ruleName;
-	}
 
 	public void addString(String string)
 	{

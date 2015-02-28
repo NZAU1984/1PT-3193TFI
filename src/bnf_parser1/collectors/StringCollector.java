@@ -19,8 +19,9 @@ public class StringCollector extends Collector
 	// PUBLIC METHODS
 
 	@Override
-	public void addChild(String ruleName, Collector collector)
+	public void addChild(Collector collector, int index)
 	{
+		System.out.println("addChild... index=" + index);
 		if(collector instanceof StringCollector)
 		{
 			sb.append(((StringCollector) collector).getString());
