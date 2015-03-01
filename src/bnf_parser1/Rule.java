@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import bnf_parser1.callables.Callable;
-import bnf_parser1.callables.MatchAnyRuleOnce;
+import bnf_parser1.callables.MatchAnyRule;
 import bnf_parser1.callables.MatchPattern;
 import bnf_parser1.callables.MatchRule;
 import bnf_parser1.callables.MatchString;
@@ -87,9 +87,9 @@ public class Rule
 		return this;
 	}
 
-	public Rule matchAnyRuleOnce(Rule... rules)
+	public Rule matchAnyRule(int minOccurences, int maxOccurences, Rule... rules)
 	{
-		callables.add(new CallableContainer(new MatchAnyRuleOnce(rules)));
+		callables.add(new CallableContainer(new MatchAnyRule(minOccurences, maxOccurences, rules)));
 
 		return this;
 	}

@@ -48,8 +48,9 @@ public abstract class Callable
 	 */
 	protected Callable(int minOccurences, int maxOccurences)
 	{
-		this.minOccurences	= minOccurences;
-		this.maxOccurences	= maxOccurences;
+		/* For the sake of simplification, let's simply take the min/max to make sure min is not greater than max. */
+		this.minOccurences	= Math.min(minOccurences, maxOccurences);
+		this.maxOccurences	= Math.max(minOccurences, maxOccurences);
 
 		resetCollectors();
 	}

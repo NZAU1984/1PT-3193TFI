@@ -59,21 +59,31 @@ public class TestParser2
 			Rule matchAny = parser.newRule()
 					.matchPattern("A|B|C", 1, Rule.INFINITY).overrideCollector();
 
-			Rule A = parser.newRule().matchString("A", 1, 1).overrideCollector();
-			Rule B = parser.newRule().matchString("B", 1, 1).overrideCollector();
-			Rule C = parser.newRule().matchString("C", 1, 1).overrideCollector();
-			Rule ABC = parser.newRule().matchAnyRuleOnce(A, B, C).overrideCollector();
-			Rule ABCbis = parser.newRule().setCollector(StringCollector.class).matchRule(ABC, 1, Rule.INFINITY);
+			Rule A = parser.newRule()
+					.matchString("A", 1, 1).overrideCollector();
+
+			Rule B = parser.newRule()
+					.matchString("B", 1, 1).overrideCollector();
+
+			Rule C = parser.newRule()
+					.matchString("C", 1, 1).overrideCollector();
+
+			Rule ABC = parser.newRule().setCollector(StringCollector.class)
+					.matchAnyRule(1, Rule.INFINITY, A, B, C);
 
 			// TODO no error if not reaching end of file
 			try
 			{
 				System.out.println("Pré");
-				Collector coll = parser.evaluateRule(ABCbis);
+				Collector coll = parser.evaluateRule(ABC);
 
 				if(null != coll)
 				{
 				System.out.println("post " + coll.getStartOffset() + ", " + coll.getEndOffset());
+				}
+				else
+				{
+					System.out.println("post... null");
 				}
 
 				if(coll instanceof StringCollector)
