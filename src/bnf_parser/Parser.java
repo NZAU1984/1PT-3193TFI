@@ -210,7 +210,7 @@ public class Parser
 
 		/* Creating the rule's collector. It might be 'null' (for example, a simple pattern matching rule may only have
 		 * to return true if the pattern matched, but the matched string is not important. As an example, creating a
-		 * rule to match spaces often doesn't have to 'collect' the matched spaces. If a callable's collector will
+		 * rule to match spaces often doesn't have to 'collectString' the matched spaces. If a callable's collector will
 		 * override the rule's collector, the collector, here, will be null as it doesn't make any sense to create a
 		 * collector to later replace it by another. */
 		Collector collector = collectorFactory.createCollector(collectorName);

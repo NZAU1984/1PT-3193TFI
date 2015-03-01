@@ -42,22 +42,6 @@ public abstract class Callable
 
 	public Collector[] getCollectors()
 	{
-		// TODO remove until...
-		if(collectors.size() > 1)
-		{
-			StringBuilder sb1 = new StringBuilder();
-			sb1.append("/// ").append(this.getClass().getSimpleName()).append(" >> ").append(collectors.size()).append(" collectors:");
-			for(int i = 0; i < collectors.size(); ++i)
-			{
-				sb1.append(" ").append(collectors.get(i).identify()).append(",");
-			}
-			sb1.append(" ///");
-
-			System.out.println(sb1.toString());
-
-		}
-		// TODO ... here
-
 		return collectors.toArray(new Collector[collectors.size()]);
 	}
 

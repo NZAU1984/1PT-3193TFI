@@ -1,16 +1,32 @@
 package bnf_parser1.collectors;
 
+import bnf_parser1.Parser;
+
+/**
+ * This class is used to collect a string that matched either a string or a pattern in
+ * {@link Parser#evaluateRule(bnf_parser1.Rule)}. If another {@code StringCollector} is passed to the
+ * {@link #addChild(Collector, int)} method, its string is appended to the current string.
+ * @author Hubert Lemelin
+ *
+ */
 public class StringCollector extends Collector
 {
 	// PROTECTED PROPERTIES
 
-	StringBuilder sb;
+	/**
+	 * The StringBuilder used to append a string to the current string.
+	 */
+	protected StringBuilder sb;
 
 	// PUBLIC CONSTRUCTOR
 
+	/**
+	 * Initializes the StringBuilder.
+	 */
 	public StringCollector()
 	{
-		System.out.println("** StringCollector :: constructor");
+// TODO remove
+//System.out.println("** StringCollector :: constructor");
 
 		sb				= new StringBuilder();
 		collectorName	= "StringCollector";
@@ -18,26 +34,34 @@ public class StringCollector extends Collector
 
 	// PUBLIC METHODS
 
+	/**
+	 * If {@code collector} is an instance of {@code StringCollector} (this class) it is appended to the StringBuilder.
+	 * Otherwise, it is simply ignored.
+	 */
 	@Override
 	public void addChild(Collector collector, int index)
 	{
-		System.out.println("addChild... index=" + index);
 		if(collector instanceof StringCollector)
 		{
 			sb.append(((StringCollector) collector).getString());
 		}
 	}
 
-	@Override
+	/**
+	 * Appends {@code string} to the StringBuilder.
+	 * @param string	The string to be appended.
+	 */
 	public void addString(String string)
 	{
 		sb.append(string);
 	}
 
+	/**
+	 * Returns the string from the StringBuilder.
+	 * @return	The string from the StringBuilder.
+	 */
 	public String getString()
 	{
 		return sb.toString();
 	}
-
-
 }

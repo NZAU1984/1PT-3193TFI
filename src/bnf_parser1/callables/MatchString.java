@@ -1,56 +1,43 @@
 package bnf_parser1.callables;
 
-import java.util.regex.Pattern;
-
-import bnf_parser1.SubparserInterface;
-import bnf_parser1.collectors.Collector;
 import bnf_parser1.collectors.StringCollector;
 
-public class MatchString extends Callable
-{
-	protected String string;
 
+/**
+ * This class checks whether or not a string matches from the current position in the file being parsed. It simply
+ * extends {@link MatchPattern} by 'telling' it to quote the pattern (the string given to this class).
+ *
+ * @author Hubert Lemelin
+ *
+ */
+public class MatchString extends MatchPattern
+{
+	/**
+	 * Constructor.
+	 *
+	 * @param string		The string to be matched.
+	 * @param minOccurences	The minimum number of occurences the pattern must appear. Can be 0.
+	 * @param maxOccurences	The maximum number of occurences the pattern must appear. Can be 'infinity'
+	 * ({@code Integer.MAX_VALUE}).
+	 */
 	public MatchString(String string, int minOccurences, int maxOccurences)
 	{
-		super(minOccurences, maxOccurences);
-
-		this.string	= string;
+		this(string, minOccurences, maxOccurences, true);
 	}
 
-	@Override
-	public boolean parse(SubparserInterface parser)
+	/**
+	 * Constructor which allows/disallows the matched string to be collected.
+	 *
+	 * @param string		The string to be matched.
+	 * @param minOccurences	The minimum number of occurences the pattern must appear. Can be 0.
+	 * @param maxOccurences	The maximum number of occurences the pattern must appear. Can be 'infinity'
+	 * ({@code Integer.MAX_VALUE}).
+	 * @param collectString	If true, the string will be collected via a new {@link StringCollector}.
+	 */
+	public MatchString(String string, int minOccurences, int maxOccurences, boolean collectString)
 	{
-		resetCollectors();
+		super(string, minOccurences, maxOccurences, collectString);
 
-		Collector collector	= null;
-		int occurences		= 0;
-		StringBuilder sb	= new StringBuilder();
-
-		String val;
-
-		while((val = parser.matchPattern(Pattern.quote(string))) != null)
-		{
-			sb.append(val);
-
-			++occurences;
-
-			if(occurences == maxOccurences)
-			{
-				break;
-			}
-		}
-
-		if(occurences >= minOccurences)
-		{
-			collector	= new StringCollector();
-			collector.addString(sb.toString());
-
-			addCollector(collector);
-
-			return true;
-		}
-
-		return false;
+		quotePattern(true);
 	}
-
 }

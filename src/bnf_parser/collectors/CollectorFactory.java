@@ -1,7 +1,7 @@
 package bnf_parser.collectors;
 
 /**
- * This class uses the factory pattern to instantiate "collectors" used by the Parser class to collect matched items
+ * This class uses the factory pattern to instantiate "collectors" used by the Parser class to collectString matched items
  * (like strings and other collectors). It first tries to instantiate collectors from this package ("basic" creators
  * like StringCollector), then it tries to instantiate collector from the subclass package.
  * <p>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import bnf_parser1.callables.Callable;
+import bnf_parser1.callables.MatchAnyRuleOnce;
 import bnf_parser1.callables.MatchPattern;
 import bnf_parser1.callables.MatchRule;
 import bnf_parser1.callables.MatchString;
@@ -28,6 +29,19 @@ public class Rule
 
 	protected int collectorOverrideIndex = NO_COLLECTOR_OVERRIDE;
 
+	// TODO remove
+	// temp
+	protected String name="";
+	public Rule setName(String name)
+	{
+		this.name=name;
+		return this;
+	}
+	public String getName()
+	{
+		return name;
+	}
+	//temp
 	Rule()
 	{
 		collectorClass	= null;
@@ -48,21 +62,34 @@ public class Rule
 
 	public Rule matchString(String string, int minOccurences, int maxOccurences)
 	{
-		callables.add(new CallableContainer(new MatchString(string, minOccurences, maxOccurences)));
+		return matchString(string, minOccurences, maxOccurences, true);
+	}
 
-		return this;
+	public Rule matchStringWithoutCollecting(String string, int minOccurences, int maxOccurences)
+	{
+		return matchString(string, minOccurences, maxOccurences, false);
 	}
 
 	public Rule matchPattern(String pattern, int minOccurences, int maxOccurences)
 	{
-		callables.add(new CallableContainer(new MatchPattern(pattern, minOccurences, maxOccurences)));
+		return matchPattern(pattern, minOccurences, maxOccurences, true);
+	}
 
-		return this;
+	public Rule matchPatternWithoutCollecting(String pattern, int minOccurences, int maxOccurences)
+	{
+		return matchPattern(pattern, minOccurences, maxOccurences, false);
 	}
 
 	public Rule matchRule(Rule rule, int minOccurences, int maxOccurences)
 	{
 		callables.add(new CallableContainer(new MatchRule(rule, minOccurences, maxOccurences)));
+
+		return this;
+	}
+
+	public Rule matchAnyRuleOnce(Rule... rules)
+	{
+		callables.add(new CallableContainer(new MatchAnyRuleOnce(rules)));
 
 		return this;
 	}
@@ -137,6 +164,20 @@ public class Rule
 
 
 	// PROTECTED
+
+	protected Rule matchString(String string, int minOccurences, int maxOccurences, boolean collectString)
+	{
+		callables.add(new CallableContainer(new MatchString(string, minOccurences, maxOccurences, collectString)));
+
+		return this;
+	}
+
+	protected Rule matchPattern(String pattern, int minOccurences, int maxOccurences, boolean collectString)
+	{
+		callables.add(new CallableContainer(new MatchPattern(pattern, minOccurences, maxOccurences, collectString)));
+
+		return this;
+	}
 
 	protected int getPreviousCallableIndex() throws NoSubruleDefinedException
 	{

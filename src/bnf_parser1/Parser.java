@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import bnf_parser1.callables.Callable;
 import bnf_parser1.callables.CallableContainsMoreThanOneCollectorException;
 import bnf_parser1.collectors.Collector;
-import bnf_parser1.collectors.CollectorNotFoundException;
 
 
 public class Parser
@@ -47,7 +46,6 @@ public class Parser
 	 * fails parsing.
 	 * @param ruleName The name of the rule to be evaluated.
 	 * @return
-	 * @throws CollectorNotFoundException
 	 * @throws ParsingFailedException
 	 * @throws CallableContainsMoreThanOneCollectorException
 	 */
@@ -114,10 +112,12 @@ public class Parser
 			{
 				/* Creating the rule's collector. It might be 'null' (for example, a simple pattern matching rule may only have
 				 * to return true if the pattern matched, but the matched string is not important. As an example, creating a
-				 * rule to match spaces often doesn't have to 'collect' the matched spaces. If a callable's collector will
+				 * rule to match spaces often doesn't have to 'collectString' the matched spaces. If a callable's collector will
 				 * override the rule's collector, the collector, here, will be null as it doesn't make any sense to create a
 				 * collector to later replace it by another. */
 				Collector collector = rule.createCollector();
+
+				int startOffset	= getBufferPosition();
 
 				rule.resetIterator();
 
@@ -138,9 +138,14 @@ public class Parser
 					{
 						for(Collector callableCollector	: callable.getCollectors())
 						{
-							collector.addChild(callableCollector, rule.getIndex(), getBufferPosition());
+							collector.addChild(callableCollector, rule.getIndex());
 						}
 					}
+				}
+
+				if(null != collector)
+				{
+					collector.setOffsets(startOffset, getBufferPosition());
 				}
 
 				return collector;
@@ -157,6 +162,9 @@ public class Parser
 			Pattern pattern1	= Pattern.compile("(^" + pattern + ")", Pattern.DOTALL);
 			Matcher matcher		= pattern1.matcher(charBuffer);
 
+// TODO remove
+//System.out.println("MatchPattern >> bufferPosition=" + charBufferPosition + ", " + pattern);
+//System.out.println("&& matchPattern pattern=" + pattern);
 			/* There is only one group that can be found, the one contained in the parentheses above. */
 			if(matcher.find())
 			{

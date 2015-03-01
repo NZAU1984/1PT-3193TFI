@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.net.URL;
 
+import uml_collectors1.DataitemCollector;
+import uml_collectors1.DataitemListCollector;
 import bnf_parser1.IncorrectCollectorException;
 import bnf_parser1.NoSubruleDefinedException;
 import bnf_parser1.Parser;
@@ -25,16 +27,54 @@ public class TestParser2
 		{
 			parser = new Parser(ligue.getPath(), "UTF-8");
 
-			Rule space	= parser.newRule().matchPattern("\\s+", 1, 1);
-			Rule A		= parser.newRule().matchString("A", 1, 1).setCollector(StringCollector.class);
-			Rule spaceAspace = parser.newRule()
-					.matchRule(space, 1, 1)
-					.matchRule(A, 1, 1).overrideCollector()
+			Rule space	= parser.newRule()
+					.matchPatternWithoutCollecting("\\s+", 1, 1);
+
+			Rule identifier	= parser.newRule()
+					.matchPattern("[A-Za-z_\\-0-9]+", 1, 1).overrideCollector();
+
+			Rule type	= parser.newRule()
+					.matchRule(identifier, 1, 1).overrideCollector();
+
+			/* A dataitem corresponds to <identifier>:<type> (with/without spaces). Since 'identifier' and 'type' both
+			 * return a StringCollector, we help differentiate them by setting different indices. */
+			Rule dataitem	= parser.newRule().setCollector(DataitemCollector.class)
+					.matchRule(space, 0, 1)
+					.matchRule(identifier, 1, 1).setIndex(0)
+					.matchRule(space, 0, 1)
+					.matchStringWithoutCollecting(":", 1, 1)
+					.matchRule(space, 0, 1)
+					.matchRule(identifier, 1, 1).setIndex(1)
 					.matchRule(space, 0, 1);
+
+			Rule dataitemOptionalRepeat	= parser.newRule().setName("dataitemOptionalRepeat")
+					.matchRule(space, 0, 1)
+					.matchStringWithoutCollecting(",", 1, 1)
+					.matchRule(dataitem, 1, 1).overrideCollector();
+
+			Rule dataitemList	= parser.newRule().setCollector(DataitemListCollector.class).setName("dataitemlist")
+					.matchRule(dataitem, 1, 1)
+					.matchRule(dataitemOptionalRepeat, 0, Rule.INFINITY);
+
+			Rule matchAny = parser.newRule()
+					.matchPattern("A|B|C", 1, Rule.INFINITY).overrideCollector();
+
+			Rule A = parser.newRule().matchString("A", 1, 1).overrideCollector();
+			Rule B = parser.newRule().matchString("B", 1, 1).overrideCollector();
+			Rule C = parser.newRule().matchString("C", 1, 1).overrideCollector();
+			Rule ABC = parser.newRule().matchAnyRuleOnce(A, B, C).overrideCollector();
+			Rule ABCbis = parser.newRule().setCollector(StringCollector.class).matchRule(ABC, 1, Rule.INFINITY);
+
 			// TODO no error if not reaching end of file
 			try
 			{
-				Collector coll = parser.evaluateRule(spaceAspace);
+				System.out.println("Pré");
+				Collector coll = parser.evaluateRule(ABCbis);
+
+				if(null != coll)
+				{
+				System.out.println("post " + coll.getStartOffset() + ", " + coll.getEndOffset());
+				}
 
 				if(coll instanceof StringCollector)
 				{
