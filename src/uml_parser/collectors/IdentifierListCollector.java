@@ -2,7 +2,7 @@ package uml_parser.collectors;
 
 import java.util.ArrayList;
 
-import uml_parser.interfaces.IdentifierList;
+import uml_parser.IdentifierList;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 

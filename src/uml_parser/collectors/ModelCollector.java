@@ -2,11 +2,11 @@ package uml_parser.collectors;
 
 import java.util.ArrayList;
 
-import uml_parser.interfaces.Aggregation;
-import uml_parser.interfaces.Association;
-import uml_parser.interfaces.ClassContent;
-import uml_parser.interfaces.Generalization;
-import uml_parser.interfaces.Model;
+import uml_parser.Aggregation;
+import uml_parser.Association;
+import uml_parser.ClassContent;
+import uml_parser.Generalization;
+import uml_parser.Model;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 

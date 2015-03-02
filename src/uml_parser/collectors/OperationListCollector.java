@@ -2,8 +2,8 @@ package uml_parser.collectors;
 
 import java.util.ArrayList;
 
-import uml_parser.interfaces.Operation;
-import uml_parser.interfaces.OperationList;
+import uml_parser.Operation;
+import uml_parser.OperationList;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 

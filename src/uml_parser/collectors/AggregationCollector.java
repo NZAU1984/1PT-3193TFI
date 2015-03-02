@@ -1,7 +1,7 @@
 package uml_parser.collectors;
 
-import uml_parser.interfaces.Aggregation;
-import uml_parser.interfaces.Role;
+import uml_parser.Aggregation;
+import uml_parser.Role;
 import bnf_parser.collectors.Collector;
 
 /**

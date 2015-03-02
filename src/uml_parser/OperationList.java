@@ -1,4 +1,4 @@
-package uml_parser.interfaces;
+package uml_parser;
 
 import uml_parser.collectors.OperationCollector;
 import uml_parser.collectors.OperationListCollector;
