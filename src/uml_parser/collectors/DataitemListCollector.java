@@ -1,9 +1,9 @@
-package uml_collectors;
+package uml_parser.collectors;
 
 import java.util.ArrayList;
 
-import uml_interfaces.Dataitem;
-import uml_interfaces.DataitemList;
+import uml_parser.interfaces.Dataitem;
+import uml_parser.interfaces.DataitemList;
 import bnf_parser.collectors.Collector;
 
 /**

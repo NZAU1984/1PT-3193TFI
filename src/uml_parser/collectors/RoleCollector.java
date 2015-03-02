@@ -1,34 +1,34 @@
-package uml_collectors;
+package uml_parser.collectors;
 
-import uml_interfaces.Dataitem;
+import uml_parser.interfaces.Role;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 
 /**
- * This class collects a {@link Dataitem} which correspond to <identifier>:<type> (with/without spaces).
+ * This class collects a {@code Dataitem} which correspond to <identifier>:<multiplicity> (with/without spaces).
  *
  * @author Hubert Lemelin
  */
-public class DataitemCollector extends Collector implements Dataitem
+public class RoleCollector extends Collector implements Role
 {
 	/**
-	 * The {@code identifier} part of the {@link Dataitem}.
+	 * The name of the role.
 	 */
 	protected String identifier;
 
 	/**
-	 * The {@code type} part of the {@link Dataitem}.
+	 * The multiplicity of the role.
 	 */
-	protected String type;
+	protected String multiplicity;
 
-	public DataitemCollector()
+	public RoleCollector()
 	{
 		super();
 	}
 
 	/**
 	 * Expects two {@link StringCollector}'s, the first one (index = 0) being the {@code identifier}, the second one
-	 * (index = 1) being the {@code type}.
+	 * (index = 1) being the {@code multiplicity}.
 	 *
 	 * @see Collector#addChild(Collector, int)
 	 */
@@ -49,11 +49,12 @@ public class DataitemCollector extends Collector implements Dataitem
 					break;
 
 				case 1:
-					type	= str;
+					multiplicity	= str;
 
 					break;
 
 				default:
+
 					break;
 			}
 		}
@@ -66,19 +67,19 @@ public class DataitemCollector extends Collector implements Dataitem
 	}
 
 	@Override
-	public String getType()
+	public String getMultiplicity()
 	{
-		return type;
+		return multiplicity;
 	}
 
 	@Override
 	public String toString()
 	{
 		return (new StringBuilder()
-			.append("Dataitem{")
+			.append("Role{")
 			.append(getIdentifier())
 			.append(" : ")
-			.append(getType())
+			.append(getMultiplicity())
 			.append("}"))
 			.toString();
 	}

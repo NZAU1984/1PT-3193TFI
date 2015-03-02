@@ -1,4 +1,4 @@
-package uml_interfaces;
+package uml_parser.interfaces;
 
 
 /**

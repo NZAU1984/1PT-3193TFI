@@ -1,14 +1,13 @@
-package uml_interfaces;
+package uml_parser.interfaces;
 
-import uml_collectors.DataitemCollector;
 
 /**
- * This is an interface used to link the MVC to a {@link DataitemCollector}. It allows to reduce the coupling between
- * the MVC and {@link DataitemCollector}.
+ * This is an interface used to link the MVC to an {@link OperationCollector}. It allows to reduce the coupling
+ * between the MVC and {@link OperationCollector}.
  *
  * @author Hubert Lemelin
  */
-public interface Dataitem
+public interface Operation
 {
 	/**
 	 * Returns the {@code identifier} part of the {@code Dataitem}.
@@ -23,6 +22,12 @@ public interface Dataitem
 	 * @return	The multiplicity.
 	 */
 	public String getType();
+
+	/**
+	 * Returns an array of all the operation attributes (as {@link Dataitem}.
+	 * @return	An array of the operation attributes.
+	 */
+	public Dataitem[] getAttributes();
 
 	/**
 	 * Used to simply display the contents of a {@code Dataitem}.

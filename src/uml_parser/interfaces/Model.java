@@ -1,6 +1,6 @@
-package uml_interfaces;
+package uml_parser.interfaces;
 
-import uml_collectors.ModelCollector;
+import uml_parser.collectors.ModelCollector;
 
 
 /**

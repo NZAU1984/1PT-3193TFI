@@ -1,6 +1,6 @@
-package uml_interfaces;
+package uml_parser.interfaces;
 
-import uml_collectors.IdentifierListCollector;
+import uml_parser.collectors.IdentifierListCollector;
 
 /**
  * This is an interface used to link the MVC to a {@link IdentifierListCollector}. It allows to reduce the coupling

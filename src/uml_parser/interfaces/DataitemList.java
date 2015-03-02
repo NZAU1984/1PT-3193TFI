@@ -1,6 +1,6 @@
-package uml_interfaces;
+package uml_parser.interfaces;
 
-import uml_collectors.DataitemListCollector;
+import uml_parser.collectors.DataitemListCollector;
 
 /**
  * This is an interface used to link the MVC to a {@link DataitemListCollector}. It allows to reduce the coupling

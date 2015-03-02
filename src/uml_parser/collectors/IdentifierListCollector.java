@@ -1,8 +1,8 @@
-package uml_collectors;
+package uml_parser.collectors;
 
 import java.util.ArrayList;
 
-import uml_interfaces.IdentifierList;
+import uml_parser.interfaces.IdentifierList;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 

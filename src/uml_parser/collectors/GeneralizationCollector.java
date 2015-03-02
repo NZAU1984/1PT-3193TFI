@@ -1,6 +1,6 @@
-package uml_collectors;
+package uml_parser.collectors;
 
-import uml_interfaces.Generalization;
+import uml_parser.interfaces.Generalization;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 

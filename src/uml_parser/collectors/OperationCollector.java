@@ -1,7 +1,7 @@
-package uml_collectors;
+package uml_parser.collectors;
 
-import uml_interfaces.Dataitem;
-import uml_interfaces.Operation;
+import uml_parser.interfaces.Dataitem;
+import uml_parser.interfaces.Operation;
 import bnf_parser.collectors.Collector;
 import bnf_parser.collectors.StringCollector;
 

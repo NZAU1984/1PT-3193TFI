@@ -1,9 +1,9 @@
-package uml_collectors;
+package uml_parser.collectors;
 
 import java.util.ArrayList;
 
-import uml_interfaces.Role;
-import uml_interfaces.RoleList;
+import uml_parser.interfaces.Role;
+import uml_parser.interfaces.RoleList;
 import bnf_parser.collectors.Collector;
 
 /**
