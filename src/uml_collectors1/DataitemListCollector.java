@@ -1,26 +1,34 @@
 package uml_collectors1;
 
+import java.util.ArrayList;
+
+import uml_interfaces.Dataitem;
+import uml_interfaces.DataitemList;
 import bnf_parser1.collectors.Collector;
-import bnf_parser1.collectors.StringCollector;
 
 /**
- * This class collects a {@code Dataitem} which correspond to <identifier>:<type> (with/without spaces).
+ * This class collects a {@code DataitemList} which correspond to [<dataitem>{,<dataitem>}] (with/without spaces).
  *
  * @author Hubert Lemelin
  */
-public class DataitemListCollector extends Collector
+public class DataitemListCollector extends Collector implements DataitemList
 {
+	// PROTECTED PROPERTIES
+
+	/**
+	 * List of {@link Dataitem}'s.
+	 */
+	protected ArrayList<DataitemCollector>	dataitemCollectors;
+
 	public DataitemListCollector()
 	{
 		super();
 
-// TODO remove
-//System.out.println("CONSTRUCTOR DataitemCollector");
+		dataitemCollectors	= new ArrayList<DataitemCollector>();
 	}
 
 	/**
-	 * Expects two {@link StringCollector}'s, the first one (index = 0) being the {@code identifier}, the second one
-	 * (index = 1) being the {@code type}.
+	 * Expects 0+ {@link DataitemCollector}'s and puts each, in order, in a list.
 	 *
 	 * @see Collector#addChild(Collector, int)
 	 */
@@ -29,8 +37,36 @@ public class DataitemListCollector extends Collector
 	{
 		if((null != collector) && (collector instanceof DataitemCollector))
 		{
-			System.out.println("!! DataitemCollector !! " + ((DataitemCollector) collector).getIdentifier() + " : " + ((DataitemCollector) collector).getType());
+			dataitemCollectors.add((DataitemCollector) collector);
 		}
+	}
+
+	@Override
+	public Dataitem[] getDataitems()
+	{
+		return dataitemCollectors.toArray(new Dataitem[dataitemCollectors.size()]);
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb	= new StringBuilder();
+
+		sb.append("DataitemList{");
+
+		if((null != dataitemCollectors) && (0 < dataitemCollectors.size()))
+		{
+			sb.append(dataitemCollectors.get(0));
+
+			for(int i = 1, iMax = dataitemCollectors.size(); i < iMax; ++i)
+			{
+				sb.append(", ").append(dataitemCollectors.get(i));
+			}
+		}
+
+		sb.append("}");
+
+		return sb.toString();
 	}
 
 }

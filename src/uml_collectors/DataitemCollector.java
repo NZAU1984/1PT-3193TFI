@@ -51,10 +51,10 @@ public class DataitemCollector extends Collector
 				identifier = ((StringCollector) collector).getString();
 				//System.out.println("    DataitemCollector::id = " + identifier);
 			}
-			else if(ruleName1.equals("type"))
+			else if(ruleName1.equals("multiplicity"))
 			{
 				type = ((StringCollector) collector).getString();
-				//System.out.println("    DataitemCollector::type = " + type);
+				//System.out.println("    DataitemCollector::multiplicity = " + multiplicity);
 			}
 		}
 	}

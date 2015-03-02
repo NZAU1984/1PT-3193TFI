@@ -186,7 +186,7 @@ public class Parser
 	}
 
 	/**
-	 * Evaluates the specified rule. In case of success, returns a new collector whose type was specified when creating
+	 * Evaluates the specified rule. In case of success, returns a new collector whose multiplicity was specified when creating
 	 * the rule, including null if none was specified. Throws a 'ParsingFailedException' if any part of the rule
 	 * fails parsing.
 	 * @param ruleName The name of the rule to be evaluated.

@@ -40,7 +40,7 @@ public class OperationCollector extends Collector
 			return;
 		}
 
-		if((collector instanceof StringCollector) &&  ((null != ruleName1) && ruleName1.equals("type")))
+		if((collector instanceof StringCollector) &&  ((null != ruleName1) && ruleName1.equals("multiplicity")))
 		{
 			System.out.println("TYPE");
 

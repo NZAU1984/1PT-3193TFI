@@ -53,7 +53,7 @@ public class IFT3913_TP1
 			parser.createRule("identifier",	0,
 				parser.matchPattern("[A-Za-z_\\-0-9]+"));
 
-			parser.createRule("type", 0,
+			parser.createRule("multiplicity", 0,
 				parser.matchRule("identifier"));
 
 			parser.createRule("data_item", "DataitemCollector",
@@ -61,7 +61,7 @@ public class IFT3913_TP1
 				parser.matchRule_0_1("space"),
 				parser.matchString(":"),
 				parser.matchRule_0_1("space"),
-				parser.matchRule("type")
+				parser.matchRule("multiplicity")
 			);
 
 			parser.createRule("data_item_list_optional_repeat", 2,
@@ -88,7 +88,7 @@ public class IFT3913_TP1
 				parser.matchRule_0_1("space"),
 				parser.matchString(":"),
 				parser.matchRule_0_1("space"),
-				parser.matchRule("type")
+				parser.matchRule("multiplicity")
 			);
 
 			parser.createRule("operation_list_optional_repeat", 2,

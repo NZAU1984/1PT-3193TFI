@@ -1,0 +1,74 @@
+package uml_collectors1;
+
+import uml_interfaces.Generalization;
+import bnf_parser1.collectors.Collector;
+import bnf_parser1.collectors.StringCollector;
+
+/**
+ * This class collects a {@link Generalization} which correspond to
+ * 'GENERALIZATION'<identifier>'SUBCLASSES'<identifierList>; (with/without spaces).
+ *
+ * @author Hubert Lemelin
+ */
+public class GeneralizationCollector extends Collector implements Generalization
+{
+	/**
+	 * The identifier (name) of the generalization.
+	 */
+	protected String identifier;
+
+	protected IdentifierListCollector identifierListCollector;
+
+	public GeneralizationCollector()
+	{
+		super();
+	}
+
+	/**
+	 * Expects one {@link StringCollector} being the {@code identifier}, and one {@link IdentifierListCollector} which
+	 * contains the names (identifiers) of the subclasses.
+	 *
+	 * @see Collector#addChild(Collector, int)
+	 */
+	@Override
+	public void addChild(Collector collector, int index)
+	{
+		if(null != collector)
+		{
+			if(collector instanceof StringCollector)
+			{
+				identifier	= ((StringCollector) collector).getString();
+			}
+			else if(collector instanceof IdentifierListCollector)
+			{
+				identifierListCollector	= (IdentifierListCollector) collector;
+			}
+		}
+	}
+
+	@Override
+	public String getIdentifier()
+	{
+		return identifier;
+	}
+
+	@Override
+	public String[] getSubclassNames()
+	{
+		return identifierListCollector.getIdentifiers();
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb	= new StringBuilder();
+
+		sb.append("Generalization{")
+			.append(getIdentifier())
+			.append(" : {")
+			.append(identifierListCollector)
+			.append("}");
+
+		return sb.toString();
+	}
+}
