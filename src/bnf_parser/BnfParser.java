@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,12 @@ import bnf_parser.collectors.Collector;
 
 public class BnfParser
 {
+	// PUBLIC STATIC CONSTANTS
+
+	public static final String	UTF8_ENCODING	= "UTF-8";
+
+	public static final String LATIN_1_ENCODING	= "ISO-8859-1";
+
 	// PROTECTED PROPERTIES
 
 	protected Subparser subparser;
@@ -68,6 +75,8 @@ public class BnfParser
 
 		protected long fileSize;
 
+		protected String fileCharset;
+
 		protected FileInputStream fileInputStream;
 
 		protected CharBuffer charBuffer;
@@ -83,17 +92,18 @@ public class BnfParser
 
 		}
 
-		public Subparser(String filename, String charset) throws IOException
-		{
-			open(filename, charset);
-		}
-
 		// PUBLIC METHODS
 
 		public void open(String filename, String charset) throws IOException
 		{
+			if(!UTF8_ENCODING.equals(charset) && !LATIN_1_ENCODING.equals(charset))
+			{
+				throw new UnsupportedCharsetException(charset);
+			}
+
 			// http://www.java-tips.org/java-se-tips/java.util.regex/how-to-apply-regular-expressions-on-the-contents-of-a.html
 			File file				= new File(filename);
+			fileCharset				= charset;
 			fileSize				= file.length();
 			fileInputStream			= new FileInputStream(file);
 	        FileChannel fileChannel	= fileInputStream.getChannel();
@@ -202,7 +212,7 @@ public class BnfParser
 				/* Moving the buffer's position after the found string. */
 				setBufferPosition(charBufferPosition + group.length());
 
-				incrementRawBufferPosition(length(group));
+				incrementRawBufferPosition(group);
 
 				return group;
 			}
@@ -248,31 +258,50 @@ public class BnfParser
 			rawBufferPosition	+= increment;
 		}
 
+		protected void incrementRawBufferPosition(String string)
+		{
+			if(null == string)
+			{
+				return;
+			}
+
+			incrementRawBufferPosition(fileCharset.equals(UTF8_ENCODING) ? length(string) : string.length());
+		}
+
+		/**
+		 * Returns the total number of bytes in a string. Many encodings such
+		 *
+		 * @param sequence
+		 * @return
+		 */
 		protected int length(CharSequence sequence)
 		{
 			int count = 0;
 
-			for (int i = 0, len = sequence.length(); i < len; i++)
+			for (int i = 0, iMax = sequence.length(); i < iMax; ++i)
 			{
-				char ch = sequence.charAt(i);
-				if (ch <= 0x7F)
+				char character = sequence.charAt(i);
+
+				if (character <= 0x7F)
 				{
-					count++;
+					++count;
 				}
-				else if (ch <= 0x7FF)
+				else if (character <= 0x7FF)
 				{
-					count += 2;
+					count	+= 2;
 				}
-				else if (Character.isHighSurrogate(ch))
+				else if (Character.isHighSurrogate(character))
 				{
-					count += 4;
+					count	+= 4;
+
 					++i;
 				}
 				else
 				{
-					count += 3;
+					count	+= 3;
 				}
 			}
+
 			return count;
 		}
 	}

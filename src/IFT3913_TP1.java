@@ -20,7 +20,7 @@ public class IFT3913_TP1
 
 		try
 		{
-			Model model = up.parse(ligue.getPath(), "UTF-8");
+			Model model = up.parse(ligue.getPath(), UmlParser.LATIN_1_ENCODING);
 
 			System.out.println(model);
 		}

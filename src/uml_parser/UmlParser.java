@@ -25,6 +25,14 @@ import bnf_parser.collectors.Collector;
 
 public class UmlParser
 {
+	// PUBLIC STATIC CONSTANTS
+
+	public static final String	UTF8_ENCODING	= BnfParser.UTF8_ENCODING;
+
+	public static final String LATIN_1_ENCODING	= BnfParser.LATIN_1_ENCODING;
+
+	// PROTECTED PROPERTIES
+
 	protected BnfParser bnfParser;
 
 	protected Rule space;
