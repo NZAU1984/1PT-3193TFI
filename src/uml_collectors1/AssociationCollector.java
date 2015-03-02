@@ -61,13 +61,11 @@ public class AssociationCollector extends Collector implements Association
 				switch(index)
 				{
 					case 0:
-						System.out.println("1st role " + roleCollector);
 						firstRoleCollector	= roleCollector;
 
 						break;
 
 					case 1:
-						System.out.println("2nd role" + roleCollector);
 						secondRoleCollector	= roleCollector;
 
 						break;

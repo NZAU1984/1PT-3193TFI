@@ -8,6 +8,7 @@ import uml_collectors1.DataitemCollector;
 import uml_collectors1.DataitemListCollector;
 import uml_collectors1.GeneralizationCollector;
 import uml_collectors1.IdentifierListCollector;
+import uml_collectors1.ModelCollector;
 import uml_collectors1.OperationCollector;
 import uml_collectors1.OperationListCollector;
 import uml_collectors1.RoleCollector;
@@ -171,7 +172,7 @@ public class TestParser2
 					.matchRule(space, 1, 1)
 					.matchRule(identifierList, 1, 1)
 					.matchRule(space, 0, 1)
-					.matchStringWithoutCollecting("", 1, 1)
+					.matchStringWithoutCollecting(";", 1, 1)
 					.matchRule(space, 0, 1);
 
 			/* AGGREGATION */
@@ -201,11 +202,20 @@ public class TestParser2
 					.matchStringWithoutCollecting(";", 1, 1)
 					.matchRule(space, 0, 1);
 
+			/* MODEL */
+
+			Rule model	= parser.newRule().setCollector(ModelCollector.class)
+					.matchStringWithoutCollecting("MODEL", 1, 1)
+					.matchRule(space, 1, 1)
+					.matchRule(identifier, 1, 1)
+					.matchRule(space, 1, 1)
+					.matchAnyRule(1, Rule.INFINITY, classContent, association, generalization, aggregation);
+
 			// TODO no error if not reaching end of file
 			try
 			{
 				System.out.println("Pré");
-				Collector coll = parser.evaluateRule(aggregation);
+				Collector coll = parser.evaluateRule(model);
 
 				//System.out.println(coll);
 
