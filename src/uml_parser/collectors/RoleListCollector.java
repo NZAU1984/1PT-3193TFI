@@ -37,7 +37,6 @@ public class RoleListCollector extends Collector implements RoleList
 	{
 		if((null != collector) && (collector instanceof RoleCollector))
 		{
-			System.out.println("!");
 			roleCollectors.add((RoleCollector) collector);
 		}
 	}

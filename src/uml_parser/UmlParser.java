@@ -103,7 +103,6 @@ public class UmlParser
 
 		try
 		{
-			System.out.println(model);
 			parsedModel	= bnfParser.evaluateRule(model);
 		}
 		catch(CallableContainsMoreThanOneCollectorException e)
@@ -306,12 +305,21 @@ public class UmlParser
 
 			/* MODEL */
 
-			model	= bnfParser.newRule().setCollector(ModelCollector.class)
+			model	= bnfParser.newRule().setCollector(ModelCollector.class).mustMatchEndOfFile()
+
+					/* Allows spaces at the beginning of file. Let's not be too strict... */
+					.matchRule(space, 0, 1)
+
 					.matchStringWithoutCollecting("MODEL", 1, 1)
 					.matchRule(space, 1, 1)
 					.matchRule(identifier, 1, 1)
 					.matchRule(space, 1, 1)
-					.matchAnyRule(1, Rule.INFINITY, classContent, association, generalization, aggregation);
+					.matchAnyRule(1, Rule.INFINITY, classContent, association, generalization, aggregation)
+
+					/* Allows spaces at the end of file. Let's not be too strict... This optional rule will always
+					 * fail because classContent, association, generalization and aggregation already checks for
+					 * trailing spaces. */
+					.matchRule(space, 0, 1);
 		}
 		catch (NoSubruleDefinedException e)
 		{

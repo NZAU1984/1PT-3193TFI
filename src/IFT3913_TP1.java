@@ -16,10 +16,6 @@ public class IFT3913_TP1
 
 		URL ligue = myClass.getClass().getResource("test.txt");
 
-		//System.out.println(ligue.getPath());
-
-//		TestParser2 tp2 = new TestParser2();
-
 		UmlParser up = UmlParser.getInstance();
 
 		try

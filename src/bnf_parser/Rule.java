@@ -29,6 +29,8 @@ public class Rule
 
 	protected int collectorOverrideIndex = NO_COLLECTOR_OVERRIDE;
 
+	protected boolean mustMatchEndOfFile	= false;
+
 	// TODO remove
 	// temp
 	protected String name="";
@@ -42,6 +44,7 @@ public class Rule
 		return name;
 	}
 	//temp
+
 	Rule()
 	{
 		collectorClass	= null;
@@ -108,7 +111,19 @@ public class Rule
 		return this;
 	}
 
-	// PACKAGE
+	public Rule mustMatchEndOfFile(boolean val)
+	{
+		mustMatchEndOfFile	= true;
+
+		return this;
+	}
+
+	public Rule mustMatchEndOfFile()
+	{
+		return mustMatchEndOfFile(true);
+	}
+
+	// PACKAGE METHODS
 
 	Collector createCollector()
 	{
@@ -160,6 +175,11 @@ public class Rule
 	int getIndex()
 	{
 		return callables.get(iteratorIndex).index;
+	}
+
+	boolean doMatchEndOfFile()
+	{
+		return mustMatchEndOfFile;
 	}
 
 

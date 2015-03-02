@@ -1,5 +1,6 @@
 package bnf_parser;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -65,11 +66,15 @@ public class BnfParser
 	{
 		// PROTECTED PROPERTIES
 
+		protected long fileSize;
+
 		protected FileInputStream fileInputStream;
 
 		protected CharBuffer charBuffer;
 
-		protected int charBufferPosition	= 0;
+		protected int charBufferPosition;
+
+		protected int rawBufferPosition;
 
 		// PUBLIC CONSTRUCTORS
 
@@ -88,11 +93,14 @@ public class BnfParser
 		public void open(String filename, String charset) throws IOException
 		{
 			// http://www.java-tips.org/java-se-tips/java.util.regex/how-to-apply-regular-expressions-on-the-contents-of-a.html
-
-			fileInputStream			= new FileInputStream(filename);
+			File file				= new File(filename);
+			fileSize				= file.length();
+			fileInputStream			= new FileInputStream(file);
 	        FileChannel fileChannel	= fileInputStream.getChannel();
 	        ByteBuffer byteBuffer	= fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) fileChannel.size());
 	        charBuffer				= Charset.forName(charset).newDecoder().decode(byteBuffer);
+	        charBufferPosition		= 0;
+	        rawBufferPosition		= 0;
 		}
 
 		public void close()
@@ -133,7 +141,8 @@ public class BnfParser
 
 			rule.resetIterator();
 
-			int bufferPositionBeforeParsing = getBufferPosition();
+			int bufferPositionBeforeParsing		= getBufferPosition();
+			int rawBufferPositionBeforeParsing	= getRawBufferPosition();
 
 			while(rule.hasNext())
 			{
@@ -142,6 +151,7 @@ public class BnfParser
 				if(!callable.parse(this))
 				{
 					setBufferPosition(bufferPositionBeforeParsing);
+					setRawBufferPosition(rawBufferPositionBeforeParsing);
 
 					throw new ParsingFailedException();
 				}
@@ -158,6 +168,12 @@ public class BnfParser
 					}
 				}
 			}
+
+			if(rule.doMatchEndOfFile() && (rawBufferPosition != fileSize))
+			{
+				throw new ParsingFailedException();
+			}
+
 
 			if(null != collector)
 			{
@@ -186,6 +202,8 @@ public class BnfParser
 				/* Moving the buffer's position after the found string. */
 				setBufferPosition(charBufferPosition + group.length());
 
+				incrementRawBufferPosition(length(group));
+
 				return group;
 			}
 
@@ -204,6 +222,11 @@ public class BnfParser
 			return charBufferPosition;
 		}
 
+		protected int getRawBufferPosition()
+		{
+			return rawBufferPosition;
+		}
+
 		/**
 		 * Sets the buffer position.
 		 * @param position
@@ -213,6 +236,44 @@ public class BnfParser
 			charBufferPosition	= position;
 
 			charBuffer.position(charBufferPosition);
+		}
+
+		protected void setRawBufferPosition(int position)
+		{
+			rawBufferPosition	= position;
+		}
+
+		protected void incrementRawBufferPosition(int increment)
+		{
+			rawBufferPosition	+= increment;
+		}
+
+		protected int length(CharSequence sequence)
+		{
+			int count = 0;
+
+			for (int i = 0, len = sequence.length(); i < len; i++)
+			{
+				char ch = sequence.charAt(i);
+				if (ch <= 0x7F)
+				{
+					count++;
+				}
+				else if (ch <= 0x7FF)
+				{
+					count += 2;
+				}
+				else if (Character.isHighSurrogate(ch))
+				{
+					count += 4;
+					++i;
+				}
+				else
+				{
+					count += 3;
+				}
+			}
+			return count;
 		}
 	}
 }
