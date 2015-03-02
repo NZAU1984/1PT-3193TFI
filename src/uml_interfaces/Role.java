@@ -1,6 +1,6 @@
 package uml_interfaces;
 
-import uml_collectors1.RoleCollector;
+import uml_collectors.RoleCollector;
 
 /**
  * This is an interface used to link the MVC to a {@link RoleCollector}. It allows to reduce the coupling between

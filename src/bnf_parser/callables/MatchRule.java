@@ -1,7 +1,7 @@
-package bnf_parser1.callables;
+package bnf_parser.callables;
 
-import bnf_parser1.Rule;
-import bnf_parser1.SubparserInterface;
+import bnf_parser.Rule;
+import bnf_parser.SubparserInterface;
 
 /**
  * This class checks whether or not a rule matches from the current position in the file being parsed.

@@ -1,4 +1,4 @@
-package uml_collectors1;
+package uml_collectors;
 
 import java.util.ArrayList;
 
@@ -7,8 +7,8 @@ import uml_interfaces.Association;
 import uml_interfaces.ClassContent;
 import uml_interfaces.Generalization;
 import uml_interfaces.Model;
-import bnf_parser1.collectors.Collector;
-import bnf_parser1.collectors.StringCollector;
+import bnf_parser.collectors.Collector;
+import bnf_parser.collectors.StringCollector;
 
 /**
  * This class collects a mix of {@link ClassContentCollector}, {@link AssociationCollector},

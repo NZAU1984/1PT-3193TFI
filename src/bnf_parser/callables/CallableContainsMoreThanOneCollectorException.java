@@ -1,4 +1,4 @@
-package bnf_parser1.callables;
+package bnf_parser.callables;
 
 public class CallableContainsMoreThanOneCollectorException extends Exception
 {

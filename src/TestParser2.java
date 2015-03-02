@@ -1,26 +1,26 @@
 import java.io.IOException;
 import java.net.URL;
 
-import uml_collectors1.AggregationCollector;
-import uml_collectors1.AssociationCollector;
-import uml_collectors1.ClassContentCollector;
-import uml_collectors1.DataitemCollector;
-import uml_collectors1.DataitemListCollector;
-import uml_collectors1.GeneralizationCollector;
-import uml_collectors1.IdentifierListCollector;
-import uml_collectors1.ModelCollector;
-import uml_collectors1.OperationCollector;
-import uml_collectors1.OperationListCollector;
-import uml_collectors1.RoleCollector;
-import uml_collectors1.RoleListCollector;
-import bnf_parser1.IncorrectCollectorException;
-import bnf_parser1.NoSubruleDefinedException;
-import bnf_parser1.Parser;
-import bnf_parser1.ParsingFailedException;
-import bnf_parser1.Rule;
-import bnf_parser1.callables.CallableContainsMoreThanOneCollectorException;
-import bnf_parser1.collectors.Collector;
-import bnf_parser1.collectors.StringCollector;
+import uml_collectors.AggregationCollector;
+import uml_collectors.AssociationCollector;
+import uml_collectors.ClassContentCollector;
+import uml_collectors.DataitemCollector;
+import uml_collectors.DataitemListCollector;
+import uml_collectors.GeneralizationCollector;
+import uml_collectors.IdentifierListCollector;
+import uml_collectors.ModelCollector;
+import uml_collectors.OperationCollector;
+import uml_collectors.OperationListCollector;
+import uml_collectors.RoleCollector;
+import uml_collectors.RoleListCollector;
+import bnf_parser.IncorrectCollectorException;
+import bnf_parser.NoSubruleDefinedException;
+import bnf_parser.Parser;
+import bnf_parser.ParsingFailedException;
+import bnf_parser.Rule;
+import bnf_parser.callables.CallableContainsMoreThanOneCollectorException;
+import bnf_parser.collectors.Collector;
+import bnf_parser.collectors.StringCollector;
 
 
 

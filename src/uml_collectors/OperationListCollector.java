@@ -1,11 +1,11 @@
-package uml_collectors1;
+package uml_collectors;
 
 import java.util.ArrayList;
 
 import uml_interfaces.Operation;
 import uml_interfaces.OperationList;
-import bnf_parser1.collectors.Collector;
-import bnf_parser1.collectors.StringCollector;
+import bnf_parser.collectors.Collector;
+import bnf_parser.collectors.StringCollector;
 
 /**
  * This class collects a {@code Dataitem} which correspond to <identifier>:<multiplicity> (with/without spaces).

@@ -1,10 +1,10 @@
-package uml_collectors1;
+package uml_collectors;
 
 import java.util.ArrayList;
 
 import uml_interfaces.Role;
 import uml_interfaces.RoleList;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.collectors.Collector;
 
 /**
  * This class collects a {@code RoleList} which correspond to <role>{,<role>} (with/without spaces).

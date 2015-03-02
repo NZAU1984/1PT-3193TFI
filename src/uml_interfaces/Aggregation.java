@@ -1,6 +1,6 @@
 package uml_interfaces;
 
-import uml_collectors1.AggregationCollector;
+import uml_collectors.AggregationCollector;
 
 
 /**

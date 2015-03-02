@@ -1,7 +1,7 @@
-package bnf_parser1;
+package bnf_parser;
 
-import bnf_parser1.callables.CallableContainsMoreThanOneCollectorException;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.callables.CallableContainsMoreThanOneCollectorException;
+import bnf_parser.collectors.Collector;
 
 public interface SubparserInterface
 {

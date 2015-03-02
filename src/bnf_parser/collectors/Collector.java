@@ -1,4 +1,4 @@
-package bnf_parser1.collectors;
+package bnf_parser.collectors;
 
 /**
  * This abstract class is the skeleton of a collector which is called by the parsed to store either strings (via

@@ -1,10 +1,10 @@
-package uml_collectors1;
+package uml_collectors;
 
 import java.util.ArrayList;
 
 import uml_interfaces.Dataitem;
 import uml_interfaces.DataitemList;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.collectors.Collector;
 
 /**
  * This class collects a {@code DataitemList} which correspond to [<dataitem>{,<dataitem>}] (with/without spaces).

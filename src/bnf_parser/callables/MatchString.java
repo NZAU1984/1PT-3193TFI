@@ -1,6 +1,6 @@
-package bnf_parser1.callables;
+package bnf_parser.callables;
 
-import bnf_parser1.collectors.StringCollector;
+import bnf_parser.collectors.StringCollector;
 
 
 /**

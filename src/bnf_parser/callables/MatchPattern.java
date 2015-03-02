@@ -1,9 +1,9 @@
-package bnf_parser1.callables;
+package bnf_parser.callables;
 
 import java.util.regex.Pattern;
 
-import bnf_parser1.SubparserInterface;
-import bnf_parser1.collectors.StringCollector;
+import bnf_parser.SubparserInterface;
+import bnf_parser.collectors.StringCollector;
 
 /**
  * This class checks whether or not a regular expression pattern matches from the current position in the file being

@@ -1,7 +1,7 @@
 package uml_interfaces;
 
-import uml_collectors1.OperationCollector;
-import uml_collectors1.OperationListCollector;
+import uml_collectors.OperationCollector;
+import uml_collectors.OperationListCollector;
 
 /**
  * This is an interface used to link the MVC to a {@link OperationCollector}. It allows to reduce the coupling

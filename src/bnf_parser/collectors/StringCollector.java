@@ -1,10 +1,10 @@
-package bnf_parser1.collectors;
+package bnf_parser.collectors;
 
-import bnf_parser1.Parser;
+import bnf_parser.Parser;
 
 /**
  * This class is used to collect a string that matched either a string or a pattern in
- * {@link Parser#evaluateRule(bnf_parser1.Rule)}. If another {@code StringCollector} is passed to the
+ * {@link Parser#evaluateRule(bnf_parser.Rule)}. If another {@code StringCollector} is passed to the
  * {@link #addChild(Collector, int)} method, its string is appended to the current string.
  * @author Hubert Lemelin
  *

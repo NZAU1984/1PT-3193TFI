@@ -1,8 +1,8 @@
-package uml_collectors1;
+package uml_collectors;
 
 import uml_interfaces.Aggregation;
 import uml_interfaces.Role;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.collectors.Collector;
 
 /**
  * This class collects an {@link Aggregation} which correspond to 'AGGREGATION' 'CONTAINER' <role> 'PARTS' <roleList>;

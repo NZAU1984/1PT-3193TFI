@@ -1,10 +1,10 @@
-package bnf_parser1.callables;
+package bnf_parser.callables;
 
 import java.util.ArrayList;
 
-import bnf_parser1.Parser;
-import bnf_parser1.SubparserInterface;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.Parser;
+import bnf_parser.SubparserInterface;
+import bnf_parser.collectors.Collector;
 
 /**
  * This abstract class represents the heart of the parsing process. Every rule contains one or more (subclasses of)

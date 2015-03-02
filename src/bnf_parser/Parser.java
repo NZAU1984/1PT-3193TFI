@@ -1,4 +1,4 @@
-package bnf_parser1;
+package bnf_parser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bnf_parser1.callables.Callable;
-import bnf_parser1.callables.CallableContainsMoreThanOneCollectorException;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.callables.Callable;
+import bnf_parser.callables.CallableContainsMoreThanOneCollectorException;
+import bnf_parser.collectors.Collector;
 
 
 public class Parser

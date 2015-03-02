@@ -1,6 +1,6 @@
 package uml_interfaces;
 
-import uml_collectors1.GeneralizationCollector;
+import uml_collectors.GeneralizationCollector;
 
 
 /**

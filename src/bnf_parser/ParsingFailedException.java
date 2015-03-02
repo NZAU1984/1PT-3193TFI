@@ -1,4 +1,4 @@
-package bnf_parser1;
+package bnf_parser;
 
 public class ParsingFailedException extends Exception
 {

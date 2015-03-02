@@ -1,14 +1,14 @@
-package bnf_parser1;
+package bnf_parser;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-import bnf_parser1.callables.Callable;
-import bnf_parser1.callables.MatchAnyRule;
-import bnf_parser1.callables.MatchPattern;
-import bnf_parser1.callables.MatchRule;
-import bnf_parser1.callables.MatchString;
-import bnf_parser1.collectors.Collector;
+import bnf_parser.callables.Callable;
+import bnf_parser.callables.MatchAnyRule;
+import bnf_parser.callables.MatchPattern;
+import bnf_parser.callables.MatchRule;
+import bnf_parser.callables.MatchString;
+import bnf_parser.collectors.Collector;
 
 
 public class Rule
