@@ -14,7 +14,7 @@ import bnf_parser.callables.CallableContainsMoreThanOneCollectorException;
 import bnf_parser.collectors.Collector;
 
 
-public class Parser
+public class BnfParser
 {
 	// PROTECTED PROPERTIES
 
@@ -22,12 +22,17 @@ public class Parser
 
 	// PUBLIC CONSTRUCTORS
 
-	public Parser(String filename, String charset) throws IOException
+	public BnfParser()
 	{
-		subparser	= new Subparser(filename, charset);
+		subparser	= new Subparser();
 	}
 
 	// PUBLIC METHODS
+
+	public void open(String filename, String charset) throws IOException
+	{
+		subparser.open(filename, charset);
+	}
 
 	public void close()
 	{
@@ -48,20 +53,12 @@ public class Parser
 	 * @return
 	 * @throws ParsingFailedException
 	 * @throws CallableContainsMoreThanOneCollectorException
+	 * @throws NoFileSpecifiedException
 	 */
-	public Collector evaluateRule(Rule rule) throws ParsingFailedException, CallableContainsMoreThanOneCollectorException
+	public Collector evaluateRule(Rule rule)
+			throws ParsingFailedException, CallableContainsMoreThanOneCollectorException, NoFileSpecifiedException
 	{
 		return subparser.evaluateRule(rule);
-	}
-
-	// TODO set back to 'protected'
-	/**
-	 * Returns the buffer's current position.
-	 * @return the buffer's current position
-	 */
-	public int getBufferPosition()
-	{
-		return subparser.getBufferPosition();
 	}
 
 	protected class Subparser implements SubparserInterface
@@ -76,16 +73,27 @@ public class Parser
 
 		// PUBLIC CONSTRUCTORS
 
+		public Subparser()
+		{
+
+		}
+
 		public Subparser(String filename, String charset) throws IOException
 		{
+			open(filename, charset);
+		}
+
+		// PUBLIC METHODS
+
+		public void open(String filename, String charset) throws IOException
+		{
 			// http://www.java-tips.org/java-se-tips/java.util.regex/how-to-apply-regular-expressions-on-the-contents-of-a.html
+
 			fileInputStream			= new FileInputStream(filename);
 	        FileChannel fileChannel	= fileInputStream.getChannel();
 	        ByteBuffer byteBuffer	= fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) fileChannel.size());
 	        charBuffer				= Charset.forName(charset).newDecoder().decode(byteBuffer);
 		}
-
-		// PUBLIC METHODS
 
 		public void close()
 		{
@@ -106,54 +114,58 @@ public class Parser
 		}
 
 		@Override
-		public Collector evaluateRule(Rule rule) throws ParsingFailedException, CallableContainsMoreThanOneCollectorException
-				/*throws CollectorNotFoundException, ParsingFailedException,
-					CallableContainsMoreThanOneCollectorException*/
+		public Collector evaluateRule(Rule rule)
+				throws ParsingFailedException, CallableContainsMoreThanOneCollectorException, NoFileSpecifiedException
+		{
+			if((null == fileInputStream) || (null == charBuffer))
 			{
-				/* Creating the rule's collector. It might be 'null' (for example, a simple pattern matching rule may only have
-				 * to return true if the pattern matched, but the matched string is not important. As an example, creating a
-				 * rule to match spaces often doesn't have to 'collectString' the matched spaces. If a callable's collector will
-				 * override the rule's collector, the collector, here, will be null as it doesn't make any sense to create a
-				 * collector to later replace it by another. */
-				Collector collector = rule.createCollector();
-
-				int startOffset	= getBufferPosition();
-
-				rule.resetIterator();
-
-				int bufferPositionBeforeParsing = getBufferPosition();
-
-				while(rule.hasNext())
-				{
-					Callable callable	= rule.next();
-
-					if(!callable.parse(this))
-					{
-						setBufferPosition(bufferPositionBeforeParsing);
-
-						throw new ParsingFailedException();
-					}
-
-					if(rule.doOverrideCollector())
-					{
-						collector = callable.getCollector();
-					}
-					else if(rule.noCollectorOverriding() && (null != collector))
-					{
-						for(Collector callableCollector	: callable.getCollectors())
-						{
-							collector.addChild(callableCollector, rule.getIndex());
-						}
-					}
-				}
-
-				if(null != collector)
-				{
-					collector.setOffsets(startOffset, getBufferPosition());
-				}
-
-				return collector;
+				throw new NoFileSpecifiedException();
 			}
+
+			/* Creating the rule's collector. It might be 'null' (for example, a simple pattern matching rule may only have
+			 * to return true if the pattern matched, but the matched string is not important. As an example, creating a
+			 * rule to match spaces often doesn't have to 'collectString' the matched spaces. If a callable's collector will
+			 * override the rule's collector, the collector, here, will be null as it doesn't make any sense to create a
+			 * collector to later replace it by another. */
+			Collector collector = rule.createCollector();
+
+			int startOffset	= getBufferPosition();
+
+			rule.resetIterator();
+
+			int bufferPositionBeforeParsing = getBufferPosition();
+
+			while(rule.hasNext())
+			{
+				Callable callable	= rule.next();
+
+				if(!callable.parse(this))
+				{
+					setBufferPosition(bufferPositionBeforeParsing);
+
+					throw new ParsingFailedException();
+				}
+
+				if(rule.doOverrideCollector())
+				{
+					collector = callable.getCollector();
+				}
+				else if(rule.noCollectorOverriding() && (null != collector))
+				{
+					for(Collector callableCollector	: callable.getCollectors())
+					{
+						collector.addChild(callableCollector, rule.getIndex());
+					}
+				}
+			}
+
+			if(null != collector)
+			{
+				collector.setOffsets(startOffset, getBufferPosition());
+			}
+
+			return collector;
+		}
 
 		/**
 		 * Checks if at the current parser's position the provided pattern matches.
@@ -166,9 +178,6 @@ public class Parser
 			Pattern pattern1	= Pattern.compile("(^" + pattern + ")", Pattern.DOTALL);
 			Matcher matcher		= pattern1.matcher(charBuffer);
 
-// TODO remove
-//System.out.println("MatchPattern >> bufferPosition=" + charBufferPosition + ", " + pattern);
-//System.out.println("&& matchPattern pattern=" + pattern);
 			/* There is only one group that can be found, the one contained in the parentheses above. */
 			if(matcher.find())
 			{
@@ -186,12 +195,11 @@ public class Parser
 
 		// PROTECTED METHODS
 
-		// TODO set back to 'protected'
 		/**
 		 * Returns the buffer's current position.
 		 * @return the buffer's current position
 		 */
-		public int getBufferPosition()
+		protected int getBufferPosition()
 		{
 			return charBufferPosition;
 		}

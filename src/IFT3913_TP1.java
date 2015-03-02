@@ -1,6 +1,10 @@
 import java.io.IOException;
 import java.net.URL;
 
+import uml_parser.Model;
+import uml_parser.ParsingFailedException;
+import uml_parser.UmlParser;
+
 
 
 public class IFT3913_TP1
@@ -14,7 +18,21 @@ public class IFT3913_TP1
 
 		//System.out.println(ligue.getPath());
 
-		TestParser2 tp2 = new TestParser2();
+//		TestParser2 tp2 = new TestParser2();
+
+		UmlParser up = UmlParser.getInstance();
+
+		try
+		{
+			Model model = up.parse(ligue.getPath(), "UTF-8");
+
+			System.out.println(model);
+		}
+		catch (ParsingFailedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 

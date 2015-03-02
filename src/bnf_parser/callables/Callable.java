@@ -2,13 +2,13 @@ package bnf_parser.callables;
 
 import java.util.ArrayList;
 
-import bnf_parser.Parser;
+import bnf_parser.BnfParser;
 import bnf_parser.SubparserInterface;
 import bnf_parser.collectors.Collector;
 
 /**
  * This abstract class represents the heart of the parsing process. Every rule contains one or more (subclasses of)
- * {@code Callable} in an ordered list. The {@link Parser} calls the {@link #parse(SubparserInterface)} method of
+ * {@code Callable} in an ordered list. The {@link BnfParser} calls the {@link #parse(SubparserInterface)} method of
  * every {@code Callable}. If all calls return true, then the rule matched successfully. Otherwise, if any call returns
  * false, then the parsing failed (the rule did not match). Every callable has a minimum number of occurences (can be
  * 0) and a maximum number of occurences (can be up to {@code Integer.MAX_VALUE} which is considered 'infinity').
