@@ -86,6 +86,11 @@ public class OperationCollector extends Collector implements Operation
 	@Override
 	public Dataitem[] getAttributes()
 	{
+		if(null == dataitemListCollector)
+		{
+			return new Dataitem[0];
+		}
+
 		return dataitemListCollector.getDataitems();
 	}
 

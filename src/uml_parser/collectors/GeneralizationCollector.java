@@ -55,6 +55,11 @@ public class GeneralizationCollector extends Collector implements Generalization
 	@Override
 	public String[] getSubclassNames()
 	{
+		if(null == identifierListCollector)
+		{
+			return new String[0];
+		}
+
 		return identifierListCollector.getIdentifiers();
 	}
 

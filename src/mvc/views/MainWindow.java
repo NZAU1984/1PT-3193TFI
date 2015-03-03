@@ -7,23 +7,27 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import mvc.Controller;
+import mvc.ErrorCenter;
+import mvc.ErrorCenter.Error;
+import mvc.ListContainer;
 
 public class MainWindow	extends JFrame implements Observer
 {
@@ -46,33 +50,27 @@ public class MainWindow	extends JFrame implements Observer
 
 	protected JList <String> subclassList;
 
+	protected JList <String> superclassList;
+
 	protected JList <String> methodList;
 
-	protected JList<String> assocAggregList;
+	protected JList<String> associationList;
+
+	protected JList<String> aggregationList;
 
 	protected JLabel detailLabel;
 
 	protected JTextArea detailTextArea;
 
-	protected JFileChooser fileChooser;
-
-	protected File file;
-
-
 	public MainWindow()
 	{
 		super("IFT3913 :: TP1 par Hubert Lemelin");
 
-		super.setSize(800, 500);
+		super.setSize(800, 800);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setLayout(new GridBagLayout());
-
-		fileChooser	= new JFileChooser();
-
-		/* Will select the directory in which the bin/src folder reside. */
-		file	= new File(System.getProperty("user.dir"));
 
 		filenameLabel	= new JLabel();
 
@@ -117,17 +115,17 @@ public class MainWindow	extends JFrame implements Observer
 		c1.gridy = 0;
 		c1.weightx = (float) 1 / 3;
 		c1.weighty = 1.0;
-		c1.gridheight = 3;
+		c1.gridheight = 4;
 
 		mainPanel.setBorder(BorderFactory.createTitledBorder("Contenu"));
 
 		JPanel classPanel	= new JPanel(new BorderLayout());
 		classPanel.setBorder(BorderFactory.createTitledBorder("Classes"));
 
-		DefaultListModel<String> classes = new DefaultListModel<String>();
+		/*DefaultListModel<String> classes = new DefaultListModel<String>();
 		classes.addElement("test");
 		classes.addElement("test1");
-		classes.addElement("test2");
+		classes.addElement("test2");*/
 
 		classList	= new JList<String>();
 
@@ -137,19 +135,14 @@ public class MainWindow	extends JFrame implements Observer
 
 		classList.setVisibleRowCount(-1);
 
-		classList.setModel(classes);
+		//classList.setModel(classes);
 
-		classPanel.add(classList);
+		classPanel.add(new JScrollPane(classList));
 
 		mainPanel.add(classPanel, c1);
 
 		JPanel attributePanel	= new JPanel(new BorderLayout());
 		attributePanel.setBorder(BorderFactory.createTitledBorder("Attributs"));
-
-		DefaultListModel<String> attributes = new DefaultListModel<String>();
-		attributes.addElement("aaa");
-		attributes.addElement("bbb");
-		attributes.addElement("ccc");
 
 		attributeList	= new JList<String>();
 
@@ -159,23 +152,17 @@ public class MainWindow	extends JFrame implements Observer
 
 		attributeList.setVisibleRowCount(-1);
 
-		attributeList.setModel(attributes);
-
-		attributePanel.add(attributeList);
+		attributePanel.add(new JScrollPane(attributeList));
 
 		c1.gridx = 1;
-		c1.weighty = (float) 1 / 3;
+		c1.weighty = (float) 1 / 4;
 		c1.gridheight = 1;
 
 		mainPanel.add(attributePanel, c1);
 
 		JPanel subclassPanel	= new JPanel(new BorderLayout());
-		subclassPanel.setBorder(BorderFactory.createTitledBorder("Sous-classes"));
 
-		DefaultListModel<String> subclasses = new DefaultListModel<String>();
-		subclasses.addElement("111");
-		subclasses.addElement("222");
-		subclasses.addElement("333");
+		subclassPanel.setBorder(BorderFactory.createTitledBorder("Sous-classes"));
 
 		subclassList	= new JList<String>();
 
@@ -185,22 +172,34 @@ public class MainWindow	extends JFrame implements Observer
 
 		subclassList.setVisibleRowCount(-1);
 
-		subclassList.setModel(subclasses);
-
-		subclassPanel.add(subclassList);
+		subclassPanel.add(new JScrollPane(subclassList));
 
 		c1.gridx = 1;
 		c1.gridy = 1;
 
 		mainPanel.add(subclassPanel, c1);
 
+		JPanel superclassPanel	= new JPanel(new BorderLayout());
+
+		superclassPanel.setBorder(BorderFactory.createTitledBorder("Super-classes"));
+
+		superclassList	= new JList<String>();
+
+		superclassList.setBorder(BorderFactory.createLoweredBevelBorder());
+
+		superclassList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		superclassList.setVisibleRowCount(-1);
+
+		superclassPanel.add(new JScrollPane(superclassList));
+
+		c1.gridx = 2;
+		c1.gridy = 1;
+
+		mainPanel.add(superclassPanel, c1);
+
 		JPanel methodPanel	= new JPanel(new BorderLayout());
 		methodPanel.setBorder(BorderFactory.createTitledBorder("Méthodes"));
-
-		DefaultListModel<String> methods = new DefaultListModel<String>();
-		methods.addElement("!!!");
-		methods.addElement("@@@");
-		methods.addElement("###");
 
 		methodList	= new JList<String>();
 
@@ -210,60 +209,63 @@ public class MainWindow	extends JFrame implements Observer
 
 		methodList.setVisibleRowCount(-1);
 
-		methodList.setModel(methods);
-
-		methodPanel.add(methodList);
+		methodPanel.add(new JScrollPane(methodList));
 
 		c1.gridx = 2;
 		c1.gridy = 0;
 
 		mainPanel.add(methodPanel, c1);
 
-		JPanel assocAggregPanel	= new JPanel(new BorderLayout());
-		assocAggregPanel.setBorder(BorderFactory.createTitledBorder("Aggrégations / Associations"));
+		JPanel associationPanel	= new JPanel(new BorderLayout());
+		associationPanel.setBorder(BorderFactory.createTitledBorder("Associations"));
 
-		DefaultListModel<String> assocAggregs = new DefaultListModel<String>();
-		assocAggregs.addElement("---");
-		assocAggregs.addElement("___");
-		assocAggregs.addElement("===");
+		associationList	= new JList<String>();
 
-		assocAggregList	= new JList<String>();
+		associationList.setBorder(BorderFactory.createLoweredBevelBorder());
 
-		assocAggregList.setBorder(BorderFactory.createLoweredBevelBorder());
+		associationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		assocAggregList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		associationList.setVisibleRowCount(-1);
 
-		assocAggregList.setVisibleRowCount(-1);
+		associationPanel.add(new JScrollPane(associationList));
 
-		assocAggregList.setModel(assocAggregs);
+		c1.gridx = 1;
+		c1.gridy = 2;
 
-		assocAggregPanel.add(assocAggregList);
+		mainPanel.add(associationPanel, c1);
+
+		JPanel aggregationPanel	= new JPanel(new BorderLayout());
+		aggregationPanel.setBorder(BorderFactory.createTitledBorder("Aggrégations"));
+
+		aggregationList	= new JList<String>();
+
+		aggregationList.setBorder(BorderFactory.createLoweredBevelBorder());
+
+		aggregationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		aggregationList.setVisibleRowCount(-1);
+
+		aggregationPanel.add(new JScrollPane(aggregationList));
 
 		c1.gridx = 2;
-		c1.gridy = 1;
+		c1.gridy = 2;
 
-		mainPanel.add(assocAggregPanel, c1);
+		mainPanel.add(aggregationPanel, c1);
 
 		JPanel detailPanel	= new JPanel(new BorderLayout());
 		detailPanel.setBorder(BorderFactory.createTitledBorder("Détails"));
 
 		detailTextArea	= new JTextArea();
 
+		detailTextArea.setEditable(false);
+
 		detailTextArea.setBorder(BorderFactory.createLoweredBevelBorder());
 
-		detailTextArea.setText("... ... ... ... \n ... ... ... \n ... ... ...");
-
-		//detailPanel.add(detailTextArea);
-
 		c1.gridx = 1;
-		c1.gridy = 2;
+		c1.gridy = 3;
 		c1.gridwidth = 2;
 
-		JScrollPane detailPanel1 = new JScrollPane(detailTextArea);
-
-		//detailPanel1.add(detailTextArea);
-
-		detailPanel.add(detailPanel1);
+		detailPanel.add(new JScrollPane(detailTextArea));
 
 		mainPanel.add(detailPanel, c1);
 
@@ -290,10 +292,66 @@ public class MainWindow	extends JFrame implements Observer
 			}
 		});
 
+		classList.addListSelectionListener(new ListSelectionListener()
+		{
+			@Override
+			public void valueChanged(ListSelectionEvent e)
+			{
+				if(!e.getValueIsAdjusting() && !classList.isSelectionEmpty())
+				{
+					classListClicked();
+				}
+			}
+		});
+
+		associationList.addListSelectionListener(new ListSelectionListener()
+		{
+			@Override
+			public void valueChanged(ListSelectionEvent e)
+			{
+				if(!e.getValueIsAdjusting() && !classList.isSelectionEmpty())
+				{
+					associationListClicked();
+				}
+			}
+		});
+
+		aggregationList.addListSelectionListener(new ListSelectionListener()
+		{
+			@Override
+			public void valueChanged(ListSelectionEvent e)
+			{
+				if(!e.getValueIsAdjusting() && !classList.isSelectionEmpty())
+				{
+					aggregationListClicked();
+				}
+			}
+		});
+
 		setVisible(true);
 	}
 
 	// PUBLIC METHODS
+
+	public String getSelectedClass()
+	{
+		if(null != classList.getSelectedValue())
+		{
+			return classList.getSelectedValue();
+		}
+
+		return null;
+	}
+
+	public int getSelectedAssociationIndex()
+	{
+		return associationList.getSelectedIndex();
+	}
+
+	public int getSelectedAggregationIndex()
+	{
+		return aggregationList.getSelectedIndex();
+	}
 
 	public void setController(Controller controller)
 	{
@@ -323,10 +381,123 @@ public class MainWindow	extends JFrame implements Observer
 		}
 	}
 
+	protected void classListClicked()
+	{
+		detailTextArea.setText("");
+
+		if(null != controller)
+		{
+			controller.classListClicked();
+		}
+	}
+
+	protected void associationListClicked()
+	{
+		if(null != controller)
+		{
+			controller.associationListClicked();
+		}
+	}
+
+	protected void aggregationListClicked()
+	{
+		if(null != controller)
+		{
+			controller.aggregationListClicked();
+		}
+	}
+
 	@Override
 	public void update(Observable o, Object arg)
 	{
-		// TODO Auto-generated method stub
+		if(arg instanceof String)
+		{
+			detailTextArea.setText((String) arg);
 
+			return;
+		}
+
+		if(arg instanceof mvc.ErrorCenter.Error)
+		{
+			Error error			= (Error) arg;
+			String errorMessage	= "";
+
+			/* Pseudoswitch because Java 6 can't switch on longs and even though it's always the same at the moment,
+			 * someone may want to handle each error type differently. */
+			if(error.number == ErrorCenter.INVALID_FILE)
+			{
+				errorMessage	= error.message;
+			}
+			else if(error.number == ErrorCenter.PARSING_FAILED)
+			{
+				errorMessage	= error.message;
+			}
+			// ...
+			else
+			{
+				errorMessage	= error.message;
+			}
+
+			JOptionPane.showMessageDialog(this, errorMessage, "Erreur", JOptionPane.ERROR_MESSAGE);
+		}
+		else if(arg instanceof ListContainer)
+		{
+			ListContainer listContainer	= (ListContainer) arg;
+
+			DefaultListModel<String> listModel	= new DefaultListModel<String>();
+
+			for(Object obj : ((ListContainer) arg).getList())
+			{
+				listModel.addElement(obj.toString());
+			}
+
+			if(listContainer.getId() == ListContainer.CLASS_LIST)
+			{
+				classList.removeAll();
+				attributeList.removeAll();
+				methodList.removeAll();
+				subclassList.removeAll();
+				associationList.removeAll();
+				detailTextArea.setText("");
+
+				classList.setModel(listModel);
+			}
+			else if(listContainer.getId() == ListContainer.ATTRIBUTE_LIST)
+			{
+				attributeList.removeAll();
+
+				attributeList.setModel(listModel);
+			}
+			else if(listContainer.getId() == ListContainer.OPERATION_LIST)
+			{
+				methodList.removeAll();
+
+				methodList.setModel(listModel);
+			}
+			else if(listContainer.getId() == ListContainer.SUBCLASS_LIST)
+			{
+				subclassList.removeAll();
+
+				subclassList.setModel(listModel);
+			}
+			else if(listContainer.getId() == ListContainer.SUPERCLASS_LIST)
+			{
+				superclassList.removeAll();
+
+				superclassList.setModel(listModel);
+			}
+			else if(listContainer.getId() == ListContainer.ASSOCIATION_LIST)
+			{
+				associationList.removeAll();
+
+				associationList.setModel(listModel);
+			}
+			else if(listContainer.getId() == ListContainer.AGGREGATION_LIST)
+			{
+				aggregationList.removeAll();
+
+				aggregationList.setModel(listModel);
+			}
+		}
 	}
 }

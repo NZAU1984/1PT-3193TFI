@@ -43,6 +43,11 @@ public class OperationListCollector extends Collector implements OperationList
 	@Override
 	public Operation[] getOperations()
 	{
+		if(null == operationCollectors)
+		{
+			return new Operation[0];
+		}
+
 		return operationCollectors.toArray(new Operation[operationCollectors.size()]);
 	}
 

@@ -5,8 +5,10 @@ ATTRIBUTES
 OPERATIONS
       nombre_joueurs() : Integer,
       entraineur() : String,
-      add_joueur(element : Joueur) : void
+      add_joueur(element : Joueur) : void,
+      asdd_joueur(element : Joueur) : void
 ;
+
 
 CLASS Participant 
 ATTRIBUTES 
@@ -57,5 +59,6 @@ AGGREGATION
 CONTAINER 
        CLASS Equipe ONE
 PARTS
-       CLASS Joueur ONE_OR_MANY
+       CLASS Joueur ONE_OR_MANY,
+       CLASS Entraineur ONE_OR_MANY
 ;

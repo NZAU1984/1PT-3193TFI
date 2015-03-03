@@ -60,6 +60,11 @@ public class AggregationCollector extends Collector implements Aggregation
 	@Override
 	public Role[] getPartRoles()
 	{
+		if(null == roleListCollector)
+		{
+			return new Role[0];
+		}
+
 		return roleListCollector.getRoles();
 	}
 

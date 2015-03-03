@@ -1,6 +1,11 @@
 package uml_parser;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 
 import uml_parser.collectors.AggregationCollector;
 import uml_parser.collectors.AssociationCollector;
@@ -339,5 +344,48 @@ public class UmlParser
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public String getSubstringFromFile(String filename, String charset, Object obj)
+	{
+		if(!(obj instanceof Collector))
+		{
+			return null;
+		}
+
+		Collector collector	= (Collector) obj;
+
+		FileInputStream fileInputStream = null;
+
+		try
+		{
+			fileInputStream = new FileInputStream(filename);
+			FileChannel fileChannel	= fileInputStream.getChannel();
+	        ByteBuffer byteBuffer	= fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) fileChannel.size());
+	        CharBuffer charBuffer				= Charset.forName(charset).newDecoder().decode(byteBuffer);
+
+	        return charBuffer.subSequence(collector.getStartOffset(), collector.getEndOffset()).toString();
+		}
+		catch (Exception e)
+		{
+			//
+		}
+		finally
+		{
+			if(null != fileInputStream)
+			{
+				try
+				{
+					fileInputStream.close();
+				}
+				catch (IOException e)
+				{
+
+				}
+			}
+		}
+
+
+		return null;
 	}
 }

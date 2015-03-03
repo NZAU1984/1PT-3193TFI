@@ -57,8 +57,34 @@ public class Controller
 	{
 		if(null != file)
 		{
-			System.out.println("??");
 			model.analyseFile(file.getAbsolutePath());
+		}
+	}
+
+	public void classListClicked()
+	{
+		String className	= view.getSelectedClass();
+
+		model.sendClassInfo(className);
+	}
+
+	public void associationListClicked()
+	{
+		int index	= view.getSelectedAssociationIndex();
+
+		if(0 <= index)
+		{
+			model.sendAssociationDetails(view.getSelectedClass(), index);
+		}
+	}
+
+	public void aggregationListClicked()
+	{
+		int index	= view.getSelectedAggregationIndex();
+
+		if(0 <= index)
+		{
+			model.sendAggregationDetails(view.getSelectedClass(), index);
 		}
 	}
 }

@@ -157,24 +157,44 @@ public class ModelCollector extends Collector implements Model
 	@Override
 	public ClassContent[] getClasses()
 	{
+		if(null == classContentCollectors)
+		{
+			return new ClassContent[0];
+		}
+
 		return classContentCollectors.toArray(new ClassContent[classContentCollectors.size()]);
 	}
 
 	@Override
 	public Association[] getAssociations()
 	{
+		if(null == associationCollectors)
+		{
+			return new Association[0];
+		}
+
 		return associationCollectors.toArray(new Association[associationCollectors.size()]);
 	}
 
 	@Override
 	public Generalization[] getGeneralizations()
 	{
+		if(null == generalizationCollectors)
+		{
+			return new Generalization[0];
+		}
+
 		return generalizationCollectors.toArray(new Generalization[generalizationCollectors.size()]);
 	}
 
 	@Override
 	public Aggregation[] getAggregations()
 	{
+		if(null == aggregationCollectors)
+		{
+			return new Aggregation[0];
+		}
+
 		return aggregationCollectors.toArray(new Aggregation[aggregationCollectors.size()]);
 	}
 }

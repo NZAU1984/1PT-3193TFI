@@ -44,6 +44,11 @@ public class IdentifierListCollector extends Collector implements IdentifierList
 	@Override
 	public String[] getIdentifiers()
 	{
+		if(null == identifiers)
+		{
+			return new String[0];
+		}
+
 		return identifiers.toArray(new String[identifiers.size()]);
 	}
 

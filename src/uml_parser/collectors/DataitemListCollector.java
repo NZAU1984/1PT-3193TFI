@@ -44,6 +44,11 @@ public class DataitemListCollector extends Collector implements DataitemList
 	@Override
 	public Dataitem[] getDataitems()
 	{
+		if(null == dataitemCollectors)
+		{
+			return new Dataitem[0];
+		}
+
 		return dataitemCollectors.toArray(new Dataitem[dataitemCollectors.size()]);
 	}
 

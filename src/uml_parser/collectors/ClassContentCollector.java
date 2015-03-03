@@ -70,12 +70,22 @@ public class ClassContentCollector extends Collector implements ClassContent
 	@Override
 	public Dataitem[] getAttributes()
 	{
+		if(null == dataitemListCollector)
+		{
+			return new Dataitem[0];
+		}
+
 		return dataitemListCollector.getDataitems();
 	}
 
 	@Override
 	public Operation[] getOperations()
 	{
+		if(null == operationListCollector)
+		{
+			return new Operation[0];
+		}
+
 		return operationListCollector.getOperations();
 	}
 

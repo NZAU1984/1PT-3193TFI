@@ -44,6 +44,11 @@ public class RoleListCollector extends Collector implements RoleList
 	@Override
 	public Role[] getRoles()
 	{
+		if(null == roleCollectors)
+		{
+			return new Role[0];
+		}
+
 		return roleCollectors.toArray(new Role[roleCollectors.size()]);
 	}
 
